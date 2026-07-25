@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "oc-voice-lab",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-07-24",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DEVICE_RELAY",
+        "class_name": "DeviceRelayRoom",
+        "script_name": "oc-device-relay"
+      }
+    ]
+  }
+}

@@ -1,0 +1,902 @@
+{
+  "$defs": {
+    "ActorRegistryProof": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "residentId": {
+          "title": "Residentid",
+          "type": "string"
+        },
+        "displayName": {
+          "title": "Displayname",
+          "type": "string"
+        },
+        "screenId": {
+          "title": "Screenid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "actorId",
+        "residentId",
+        "displayName",
+        "screenId"
+      ],
+      "title": "ActorRegistryProof",
+      "type": "object"
+    },
+    "CommitProof": {
+      "additionalProperties": false,
+      "properties": {
+        "commitId": {
+          "title": "Commitid",
+          "type": "string"
+        },
+        "canonicalEventId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Canonicaleventid"
+        },
+        "fromVersion": {
+          "minimum": 0,
+          "title": "Fromversion",
+          "type": "integer"
+        },
+        "toVersion": {
+          "minimum": 0,
+          "title": "Toversion",
+          "type": "integer"
+        },
+        "beforeHash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Beforehash",
+          "type": "string"
+        },
+        "afterHash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Afterhash",
+          "type": "string"
+        },
+        "committedAt": {
+          "format": "date-time",
+          "title": "Committedat",
+          "type": "string"
+        },
+        "tickIndex": {
+          "minimum": 0,
+          "title": "Tickindex",
+          "type": "integer"
+        },
+        "atomic": {
+          "const": true,
+          "default": true,
+          "title": "Atomic",
+          "type": "boolean"
+        },
+        "rolledBack": {
+          "title": "Rolledback",
+          "type": "boolean"
+        },
+        "failureReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failurereason"
+        }
+      },
+      "required": [
+        "commitId",
+        "fromVersion",
+        "toVersion",
+        "beforeHash",
+        "afterHash",
+        "committedAt",
+        "tickIndex",
+        "rolledBack"
+      ],
+      "title": "CommitProof",
+      "type": "object"
+    },
+    "ConflictSetProof": {
+      "additionalProperties": false,
+      "properties": {
+        "conflictSetId": {
+          "title": "Conflictsetid",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "proposalIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Proposalids",
+          "type": "array"
+        },
+        "resourceId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resourceid"
+        },
+        "reasonLabel": {
+          "title": "Reasonlabel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conflictSetId",
+        "kind",
+        "proposalIds",
+        "reasonLabel"
+      ],
+      "title": "ConflictSetProof",
+      "type": "object"
+    },
+    "MemoryDeltaProof": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "memoryId": {
+          "title": "Memoryid",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "sourceObservationIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sourceobservationids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "actorId",
+        "memoryId",
+        "summary",
+        "sourceObservationIds"
+      ],
+      "title": "MemoryDeltaProof",
+      "type": "object"
+    },
+    "NextRoundEvidenceProof": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "previousProposalId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Previousproposalid"
+        },
+        "nextProposalId": {
+          "title": "Nextproposalid",
+          "type": "string"
+        },
+        "changedBecauseMemoryIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Changedbecausememoryids",
+          "type": "array"
+        },
+        "changedBecauseRelationshipIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Changedbecauserelationshipids",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "actorId",
+        "nextProposalId",
+        "changedBecauseMemoryIds",
+        "changedBecauseRelationshipIds",
+        "summary"
+      ],
+      "title": "NextRoundEvidenceProof",
+      "type": "object"
+    },
+    "PersistenceProof": {
+      "additionalProperties": false,
+      "properties": {
+        "memoryDeltas": {
+          "items": {
+            "$ref": "#/$defs/MemoryDeltaProof"
+          },
+          "title": "Memorydeltas",
+          "type": "array"
+        },
+        "relationshipDeltas": {
+          "items": {
+            "$ref": "#/$defs/RelationshipDeltaProof"
+          },
+          "title": "Relationshipdeltas",
+          "type": "array"
+        },
+        "nextRoundEvidence": {
+          "$ref": "#/$defs/NextRoundEvidenceProof"
+        }
+      },
+      "required": [
+        "memoryDeltas",
+        "relationshipDeltas",
+        "nextRoundEvidence"
+      ],
+      "title": "PersistenceProof",
+      "type": "object"
+    },
+    "PerspectiveProof": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "canonicalEventId": {
+          "title": "Canonicaleventid",
+          "type": "string"
+        },
+        "knowledgeState": {
+          "enum": [
+            "observed",
+            "misunderstood",
+            "unknown"
+          ],
+          "title": "Knowledgestate",
+          "type": "string"
+        },
+        "observedFactIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Observedfactids",
+          "type": "array"
+        },
+        "unknownFactIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknownfactids",
+          "type": "array"
+        },
+        "perspectiveLabel": {
+          "title": "Perspectivelabel",
+          "type": "string"
+        },
+        "beliefSummary": {
+          "title": "Beliefsummary",
+          "type": "string"
+        },
+        "memorySummary": {
+          "title": "Memorysummary",
+          "type": "string"
+        },
+        "publicExpression": {
+          "title": "Publicexpression",
+          "type": "string"
+        },
+        "privateOsAvailable": {
+          "title": "Privateosavailable",
+          "type": "boolean"
+        },
+        "privateOsRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Privateosref"
+        },
+        "privateInnerOs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Privateinneros"
+        }
+      },
+      "required": [
+        "actorId",
+        "canonicalEventId",
+        "knowledgeState",
+        "observedFactIds",
+        "unknownFactIds",
+        "perspectiveLabel",
+        "beliefSummary",
+        "memorySummary",
+        "publicExpression",
+        "privateOsAvailable"
+      ],
+      "title": "PerspectiveProof",
+      "type": "object"
+    },
+    "ProposalProof": {
+      "additionalProperties": false,
+      "properties": {
+        "proposalId": {
+          "title": "Proposalid",
+          "type": "string"
+        },
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "intentLabel": {
+          "title": "Intentlabel",
+          "type": "string"
+        },
+        "intentKind": {
+          "enum": [
+            "TAKE",
+            "GIVE",
+            "MOVE",
+            "UTTERANCE",
+            "WAIT"
+          ],
+          "title": "Intentkind",
+          "type": "string"
+        },
+        "basedOnWorldVersion": {
+          "minimum": 0,
+          "title": "Basedonworldversion",
+          "type": "integer"
+        },
+        "targetLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Targetlabel"
+        },
+        "targetId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Targetid"
+        },
+        "resourceId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resourceid"
+        },
+        "preconditionLabels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preconditionlabels",
+          "type": "array"
+        },
+        "influencedByMemoryIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Influencedbymemoryids",
+          "type": "array"
+        },
+        "influencedByRelationshipIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Influencedbyrelationshipids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "proposalId",
+        "actorId",
+        "intentLabel",
+        "intentKind",
+        "basedOnWorldVersion",
+        "preconditionLabels"
+      ],
+      "title": "ProposalProof",
+      "type": "object"
+    },
+    "RelationshipDeltaProof": {
+      "additionalProperties": false,
+      "properties": {
+        "deltaId": {
+          "title": "Deltaid",
+          "type": "string"
+        },
+        "fromActorId": {
+          "title": "Fromactorid",
+          "type": "string"
+        },
+        "toActorId": {
+          "title": "Toactorid",
+          "type": "string"
+        },
+        "dimension": {
+          "title": "Dimension",
+          "type": "string"
+        },
+        "before": {
+          "title": "Before",
+          "type": "integer"
+        },
+        "after": {
+          "title": "After",
+          "type": "integer"
+        },
+        "causeCanonicalEventId": {
+          "title": "Causecanonicaleventid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "deltaId",
+        "fromActorId",
+        "toActorId",
+        "dimension",
+        "before",
+        "after",
+        "causeCanonicalEventId"
+      ],
+      "title": "RelationshipDeltaProof",
+      "type": "object"
+    },
+    "ReplayProof": {
+      "additionalProperties": false,
+      "properties": {
+        "verified": {
+          "title": "Verified",
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "mismatch"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "string"
+        },
+        "expectedFinalHash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expectedfinalhash",
+          "type": "string"
+        },
+        "actualFinalHash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Actualfinalhash",
+          "type": "string"
+        },
+        "lastCanonicalSequence": {
+          "minimum": 0,
+          "title": "Lastcanonicalsequence",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "verified",
+        "status",
+        "seed",
+        "expectedFinalHash",
+        "actualFinalHash",
+        "lastCanonicalSequence"
+      ],
+      "title": "ReplayProof",
+      "type": "object"
+    },
+    "ResidentPresenceProof": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "residentId": {
+          "title": "Residentid",
+          "type": "string"
+        },
+        "displayName": {
+          "title": "Displayname",
+          "type": "string"
+        },
+        "floorId": {
+          "title": "Floorid",
+          "type": "string"
+        },
+        "roomId": {
+          "title": "Roomid",
+          "type": "string"
+        },
+        "locationId": {
+          "title": "Locationid",
+          "type": "string"
+        },
+        "presence": {
+          "enum": [
+            "home",
+            "away",
+            "adventure",
+            "offline"
+          ],
+          "title": "Presence",
+          "type": "string"
+        },
+        "activityLabel": {
+          "title": "Activitylabel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "actorId",
+        "residentId",
+        "displayName",
+        "floorId",
+        "roomId",
+        "locationId",
+        "presence",
+        "activityLabel"
+      ],
+      "title": "ResidentPresenceProof",
+      "type": "object"
+    },
+    "ResolutionBatchProof": {
+      "additionalProperties": false,
+      "properties": {
+        "batchId": {
+          "title": "Batchid",
+          "type": "string"
+        },
+        "conflictSetIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Conflictsetids",
+          "type": "array"
+        },
+        "atomic": {
+          "const": true,
+          "default": true,
+          "title": "Atomic",
+          "type": "boolean"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "string"
+        },
+        "receipts": {
+          "items": {
+            "$ref": "#/$defs/RuleReceiptProof"
+          },
+          "title": "Receipts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "batchId",
+        "conflictSetIds",
+        "seed",
+        "receipts"
+      ],
+      "title": "ResolutionBatchProof",
+      "type": "object"
+    },
+    "RuleReceiptProof": {
+      "additionalProperties": false,
+      "properties": {
+        "proposalId": {
+          "title": "Proposalid",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "applied",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "success",
+            "blocked",
+            "with_cost",
+            "rejected"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "ruleId": {
+          "title": "Ruleid",
+          "type": "string"
+        },
+        "ruleLabel": {
+          "title": "Rulelabel",
+          "type": "string"
+        },
+        "reasonCodes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasoncodes",
+          "type": "array"
+        },
+        "deterministicEvidence": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Deterministicevidence",
+          "type": "string"
+        },
+        "evidenceLabel": {
+          "title": "Evidencelabel",
+          "type": "string"
+        },
+        "effects": {
+          "items": {
+            "$ref": "#/$defs/StateEffect"
+          },
+          "title": "Effects",
+          "type": "array"
+        }
+      },
+      "required": [
+        "proposalId",
+        "status",
+        "outcome",
+        "ruleId",
+        "ruleLabel",
+        "reasonCodes",
+        "deterministicEvidence",
+        "evidenceLabel",
+        "effects"
+      ],
+      "title": "RuleReceiptProof",
+      "type": "object"
+    },
+    "SnapshotProof": {
+      "additionalProperties": false,
+      "properties": {
+        "worldVersion": {
+          "minimum": 0,
+          "title": "Worldversion",
+          "type": "integer"
+        },
+        "worldHash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Worldhash",
+          "type": "string"
+        },
+        "tickIndex": {
+          "minimum": 0,
+          "title": "Tickindex",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "worldVersion",
+        "worldHash",
+        "tickIndex"
+      ],
+      "title": "SnapshotProof",
+      "type": "object"
+    },
+    "StateEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "enum": [
+            "set",
+            "inc"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "before": {
+          "title": "Before"
+        },
+        "after": {
+          "title": "After"
+        },
+        "by": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "By"
+        }
+      },
+      "required": [
+        "op",
+        "path",
+        "before",
+        "after"
+      ],
+      "title": "StateEffect",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2",
+      "default": "0.2",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "sessionId": {
+      "title": "Sessionid",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "string"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/SnapshotProof"
+    },
+    "actors": {
+      "items": {
+        "$ref": "#/$defs/ActorRegistryProof"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Actors",
+      "type": "array"
+    },
+    "residentPresence": {
+      "items": {
+        "$ref": "#/$defs/ResidentPresenceProof"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Residentpresence",
+      "type": "array"
+    },
+    "proposals": {
+      "items": {
+        "$ref": "#/$defs/ProposalProof"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Proposals",
+      "type": "array"
+    },
+    "conflictSets": {
+      "items": {
+        "$ref": "#/$defs/ConflictSetProof"
+      },
+      "title": "Conflictsets",
+      "type": "array"
+    },
+    "resolutionBatch": {
+      "$ref": "#/$defs/ResolutionBatchProof"
+    },
+    "commit": {
+      "$ref": "#/$defs/CommitProof"
+    },
+    "perspectives": {
+      "items": {
+        "$ref": "#/$defs/PerspectiveProof"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Perspectives",
+      "type": "array"
+    },
+    "persistence": {
+      "$ref": "#/$defs/PersistenceProof"
+    },
+    "replay": {
+      "$ref": "#/$defs/ReplayProof"
+    },
+    "providerFallbackCount": {
+      "minimum": 0,
+      "title": "Providerfallbackcount",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "runId",
+    "sessionId",
+    "seed",
+    "snapshot",
+    "actors",
+    "residentPresence",
+    "proposals",
+    "conflictSets",
+    "resolutionBatch",
+    "commit",
+    "perspectives",
+    "persistence",
+    "replay",
+    "providerFallbackCount"
+  ],
+  "title": "LivingWorldProofDTO",
+  "type": "object"
+}

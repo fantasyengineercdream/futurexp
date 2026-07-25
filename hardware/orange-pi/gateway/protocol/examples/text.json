@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "task_id": "demo-text-001",
+  "type": "scene.render",
+  "priority": 50,
+  "ttl_ms": 10000,
+  "interrupt": "replace",
+  "duration_ms": 5000,
+  "created_at": "2026-07-24T10:00:00Z",
+  "scene": {
+    "text": {
+      "content": "主人，该喝水了。",
+      "style": "devil_reminder"
+    }
+  }
+}

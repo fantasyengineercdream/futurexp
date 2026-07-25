@@ -1,0 +1,446 @@
+{
+  "sessionId": "fixture-consent-off",
+  "worldId": "infinite-apartment",
+  "status": "completed",
+  "consentRequired": false,
+  "lastCursor": 29,
+  "events": [
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-001",
+      "cursor": 1,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 0,
+      "emittedAt": "2026-07-24T00:00:01Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.started",
+      "payload": {
+        "actorId": "oc-devil",
+        "worldVersion": 0
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-004",
+      "cursor": 4,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 0,
+      "emittedAt": "2026-07-24T00:00:04Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-decision-dm-pressure",
+      "type": "canonical.event.committed",
+      "payload": {
+        "event": {
+          "canonicalEventId": "fixture-consent-off-canonical-dm-pressure",
+          "sequence": 1,
+          "kind": "dm.intervention.applied",
+          "decisionId": "fixture-consent-off-decision-dm-pressure",
+          "factCodes": [
+            "countdown.started"
+          ],
+          "effects": [
+            {
+              "op": "set",
+              "path": "/countdown",
+              "before": null,
+              "after": 3
+            }
+          ],
+          "perceptualAtoms": [
+            {
+              "atomId": "fixture-consent-off-canonical-dm-pressure-bell",
+              "code": "foyer.bell.rang",
+              "modality": "hearing",
+              "locationId": "grand-foyer",
+              "lineOfSightRequired": false,
+              "data": {
+                "countdown": 3
+              }
+            }
+          ]
+        },
+        "worldVersion": 1
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-007",
+      "cursor": 7,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 0,
+      "emittedAt": "2026-07-24T00:00:07Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-decision-take-key",
+      "type": "canonical.event.committed",
+      "payload": {
+        "event": {
+          "canonicalEventId": "fixture-consent-off-canonical-take-key",
+          "sequence": 2,
+          "kind": "action.resolved",
+          "actorId": "oc-devil",
+          "decisionId": "fixture-consent-off-decision-take-key",
+          "factCodes": [
+            "key.taken"
+          ],
+          "effects": [
+            {
+              "op": "set",
+              "path": "/objects/threshold-key/holderId",
+              "before": "oc-user",
+              "after": "oc-devil"
+            }
+          ],
+          "perceptualAtoms": [
+            {
+              "atomId": "fixture-consent-off-canonical-take-key-seen",
+              "code": "key.take.seen",
+              "modality": "sight",
+              "locationId": "mirror-curtain",
+              "lineOfSightRequired": true,
+              "data": {
+                "actorId": "oc-devil",
+                "objectId": "threshold-key"
+              }
+            },
+            {
+              "atomId": "fixture-consent-off-canonical-take-key-heard",
+              "code": "key.metal.chime",
+              "modality": "hearing",
+              "locationId": "mirror-curtain",
+              "lineOfSightRequired": false,
+              "data": {
+                "objectId": "threshold-key"
+              }
+            }
+          ]
+        },
+        "worldVersion": 2
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-008",
+      "cursor": 8,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 0,
+      "emittedAt": "2026-07-24T00:00:08Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.completed",
+      "payload": {
+        "worldVersion": 2,
+        "lastCanonicalSequence": 2,
+        "checksum": "63b7468823a6cc988010218f5cc346368d2fe8908bb984cb19c54965fca1d2be"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-009",
+      "cursor": 9,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 1,
+      "emittedAt": "2026-07-24T00:00:09Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.started",
+      "payload": {
+        "actorId": "oc-user",
+        "worldVersion": 2
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-012",
+      "cursor": 12,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 1,
+      "emittedAt": "2026-07-24T00:00:12Z",
+      "visibility": {
+        "scope": "owner",
+        "ocId": "oc-user"
+      },
+      "causationId": "fixture-consent-off-canonical-take-key",
+      "type": "observation.created",
+      "payload": {
+        "observation": {
+          "observationId": "observation-fixture-consent-off-canonical-take-key-oc-user",
+          "canonicalEventId": "fixture-consent-off-canonical-take-key",
+          "ocId": "oc-user",
+          "channels": [
+            "sight",
+            "hearing"
+          ],
+          "facts": [
+            {
+              "atomId": "fixture-consent-off-canonical-take-key-seen",
+              "code": "key.take.seen",
+              "data": {
+                "actorId": "oc-devil",
+                "objectId": "threshold-key"
+              }
+            },
+            {
+              "atomId": "fixture-consent-off-canonical-take-key-heard",
+              "code": "key.metal.chime",
+              "data": {
+                "objectId": "threshold-key"
+              }
+            }
+          ],
+          "completeness": "full",
+          "source": "direct"
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-013",
+      "cursor": 13,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 1,
+      "emittedAt": "2026-07-24T00:00:13Z",
+      "visibility": {
+        "scope": "owner",
+        "ocId": "oc-user"
+      },
+      "causationId": "observation-fixture-consent-off-canonical-take-key-oc-user",
+      "type": "belief.updated",
+      "payload": {
+        "belief": {
+          "beliefId": "belief-observation-fixture-consent-off-canonical-take-key-oc-user",
+          "ocId": "oc-user",
+          "predicate": "noticedEvent",
+          "object": "fixture-consent-off-canonical-take-key",
+          "stance": "believed",
+          "confidence": 0.5,
+          "sourceObservationIds": [
+            "observation-fixture-consent-off-canonical-take-key-oc-user"
+          ]
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-018",
+      "cursor": 18,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 1,
+      "emittedAt": "2026-07-24T00:00:18Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.completed",
+      "payload": {
+        "worldVersion": 2,
+        "lastCanonicalSequence": 2,
+        "checksum": "63b7468823a6cc988010218f5cc346368d2fe8908bb984cb19c54965fca1d2be"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-019",
+      "cursor": 19,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:19Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.started",
+      "payload": {
+        "actorId": "oc-angel",
+        "worldVersion": 2
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-022",
+      "cursor": 22,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:22Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-angel-utterance-decision",
+      "type": "canonical.event.committed",
+      "payload": {
+        "event": {
+          "canonicalEventId": "fixture-consent-off-angel-utterance-canonical",
+          "sequence": 3,
+          "kind": "utterance.spoken",
+          "actorId": "oc-angel",
+          "decisionId": "fixture-consent-off-angel-utterance-decision",
+          "factCodes": [
+            "utterance.spoken"
+          ],
+          "effects": [
+            {
+              "op": "inc",
+              "path": "/relationships/oc-angel/oc-devil/tension",
+              "before": 0,
+              "after": 1,
+              "by": 1
+            }
+          ],
+          "perceptualAtoms": [
+            {
+              "atomId": "fixture-consent-off-angel-utterance-canonical-heard",
+              "code": "utterance.heard",
+              "modality": "hearing",
+              "locationId": "grand-foyer",
+              "lineOfSightRequired": false,
+              "data": {
+                "speakerId": "oc-angel",
+                "text": "恶魔，你拿走了不属于你的钥匙。"
+              }
+            }
+          ]
+        },
+        "worldVersion": 3
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-023",
+      "cursor": 23,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:23Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-angel-utterance-canonical",
+      "type": "utterance.created",
+      "payload": {
+        "utterance": {
+          "utteranceId": "fixture-consent-off-angel-utterance-artifact",
+          "ocId": "oc-angel",
+          "canonicalEventId": "fixture-consent-off-angel-utterance-canonical",
+          "audience": "world",
+          "text": "恶魔，你拿走了不属于你的钥匙。",
+          "basedOnBeliefIds": [
+            "belief-observation-fixture-consent-off-canonical-take-key-oc-angel"
+          ],
+          "truthPosture": "uncertain"
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-026",
+      "cursor": 26,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:26Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-user-utterance-decision",
+      "type": "canonical.event.committed",
+      "payload": {
+        "event": {
+          "canonicalEventId": "fixture-consent-off-user-utterance-canonical",
+          "sequence": 4,
+          "kind": "utterance.spoken",
+          "actorId": "oc-user",
+          "decisionId": "fixture-consent-off-user-utterance-decision",
+          "factCodes": [
+            "utterance.spoken"
+          ],
+          "effects": [],
+          "perceptualAtoms": [
+            {
+              "atomId": "fixture-consent-off-user-utterance-canonical-heard",
+              "code": "utterance.heard",
+              "modality": "hearing",
+              "locationId": "mirror-curtain",
+              "lineOfSightRequired": false,
+              "data": {
+                "speakerId": "oc-user",
+                "text": "钥匙已经处理好了。"
+              }
+            }
+          ]
+        },
+        "worldVersion": 4
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-027",
+      "cursor": 27,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:27Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "causationId": "fixture-consent-off-user-utterance-canonical",
+      "type": "utterance.created",
+      "payload": {
+        "utterance": {
+          "utteranceId": "fixture-consent-off-user-utterance-artifact",
+          "ocId": "oc-user",
+          "canonicalEventId": "fixture-consent-off-user-utterance-canonical",
+          "audience": "publicUi",
+          "text": "钥匙已经处理好了。",
+          "basedOnBeliefIds": [
+            "belief-observation-fixture-consent-off-canonical-take-key-oc-user"
+          ],
+          "truthPosture": "withholding"
+        }
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-028",
+      "cursor": 28,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:28Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "tick.completed",
+      "payload": {
+        "worldVersion": 4,
+        "lastCanonicalSequence": 4,
+        "checksum": "4032c525ba99ee2617b78e2f2232da1d45e55828025bf001a58fcd9ebcb2c235"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "eventId": "fixture-consent-off-stream-029",
+      "cursor": 29,
+      "sessionId": "fixture-consent-off",
+      "tickIndex": 2,
+      "emittedAt": "2026-07-24T00:00:29Z",
+      "visibility": {
+        "scope": "public"
+      },
+      "type": "session.completed",
+      "payload": {
+        "worldVersion": 4,
+        "lastCanonicalSequence": 4,
+        "checksum": "4032c525ba99ee2617b78e2f2232da1d45e55828025bf001a58fcd9ebcb2c235"
+      }
+    }
+  ],
+  "checksum": "4032c525ba99ee2617b78e2f2232da1d45e55828025bf001a58fcd9ebcb2c235",
+  "oc": {
+    "ocId": "oc-user",
+    "name": "用户 OC",
+    "role": "钥匙的当前持有者",
+    "persona": "谨慎、重视自主选择，不轻易公开全部动机。",
+    "publicStyle": "克制而简短。"
+  }
+}

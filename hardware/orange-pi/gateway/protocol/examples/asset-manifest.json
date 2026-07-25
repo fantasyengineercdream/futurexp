@@ -1,0 +1,11 @@
+{
+  "asset_id": "devil_thinking",
+  "asset_version": 1,
+  "width": 800,
+  "height": 480,
+  "bit_depth": 1,
+  "frame_count": 8,
+  "frame_duration_ms": 250,
+  "loopable": true,
+  "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OC TV Tower Demo</title>
+    <link rel="stylesheet" href="./styles.css?v=integration-21" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="sky"></div>
+      <div class="abyss"></div>
+      <div id="viewport" aria-label="OC television tower demo">
+        <div id="camera">
+          <div id="world"></div>
+        </div>
+      </div>
+
+      <div class="hud">
+        <div class="title">OC TV TOWER <span class="preview-mark" id="sourceMark">PREVIEW</span></div>
+        <div class="readout">
+          <span id="floorReadout">Floor 03</span>
+          <span id="positionReadout">Y 0</span>
+        </div>
+        <div class="hint">W/S 水平前后 · A/D 水平左右 · 空格 / Shift 垂直移动 · 拖动鼠标仅环顾</div>
+        <div class="hud__actions">
+          <button id="coreLocator" class="core-locator" type="button">寻找OOCC吧</button>
+          <button id="ocImportOpen" class="oc-import-open" type="button">导入我的 OC</button>
+        </div>
+      </div>
+
+      <div id="selection" class="selection" hidden>
+        <div id="selectionLabel" class="selection__label">当前状态</div>
+        <div id="selectionName" class="selection__name">Room</div>
+      </div>
+
+      <dialog
+        aria-labelledby="ocImportTitle"
+        class="oc-import-dialog"
+        id="ocImportDialog"
+      >
+        <form class="oc-import-shell" id="ocImportForm">
+          <header class="oc-import-header">
+            <div>
+              <span>BRING YOUR OC</span>
+              <h2 id="ocImportTitle">让已有设定住进来</h2>
+            </div>
+            <button aria-label="关闭导入" id="ocImportClose" type="button">×</button>
+          </header>
+
+          <div id="ocImportSource">
+            <p>粘贴你已经写好的角色设定，或选择一份 TXT / Markdown。系统只整理，不替你创作。</p>
+            <label for="ocImportSourceText">角色设定</label>
+            <textarea
+              id="ocImportSourceText"
+              maxlength="50000"
+              placeholder="例如：&#10;岚&#10;她会先核对证据，再保护被遗忘的名字。&#10;说话简短，但不会替别人做决定。"
+              required
+              rows="9"
+            ></textarea>
+            <label class="oc-import-file" for="ocImportFile">
+              <span>或读取文字文件</span>
+              <input
+                accept=".txt,.md,text/plain,text/markdown"
+                id="ocImportFile"
+                type="file"
+              />
+            </label>
+            <button class="oc-import-primary" id="ocImportPreview" type="submit">
+              整理成待确认草稿
+            </button>
+          </div>
+
+          <section aria-live="polite" class="oc-import-review" hidden id="ocImportReview">
+            <span class="oc-import-review__eyebrow">待你确认 · 尚未进入世界</span>
+            <label for="ocImportName">名字</label>
+            <input id="ocImportName" maxlength="80" />
+            <label for="ocImportPersona">角色设定</label>
+            <textarea id="ocImportPersona" maxlength="4000" rows="4"></textarea>
+            <div class="oc-import-review__grid">
+              <div>
+                <label for="ocImportConstraints">人设边界 · 每行一条</label>
+                <textarea id="ocImportConstraints" rows="3"></textarea>
+              </div>
+              <div>
+                <label for="ocImportGoals">行动目标 · 每行一条</label>
+                <textarea id="ocImportGoals" rows="3"></textarea>
+              </div>
+            </div>
+            <div aria-label="RPG 属性" class="oc-import-stats" id="ocImportStats"></div>
+            <small id="ocImportAudit"></small>
+            <div class="oc-import-review__actions">
+              <button id="ocImportBack" type="button">返回修改资料</button>
+              <button class="oc-import-primary" id="ocImportConfirm" type="button">
+                确认并加入活世界
+              </button>
+            </div>
+          </section>
+
+          <section aria-live="polite" class="oc-import-done" hidden id="ocImportDone">
+            <span>REGISTERED</span>
+            <h3 id="ocImportDoneName"></h3>
+            <p>已替换默认 Demo 住民。下一次世界启动会由真实 Scheduler 安排她的计划与移动。</p>
+            <button class="oc-import-primary" id="ocImportWatch" type="button">
+              回到电视塔看她生活
+            </button>
+          </section>
+
+          <p aria-live="assertive" class="oc-import-error" hidden id="ocImportError"></p>
+        </form>
+      </dialog>
+    </div>
+
+    <script src="./room-bridge.js?v=integration-21"></script>
+    <script src="./oc-import-client.js?v=integration-21"></script>
+    <script src="./app.js?v=integration-21"></script>
+  </body>
+</html>

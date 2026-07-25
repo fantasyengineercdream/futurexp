@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "build:vps": "tsc --noEmit && vite build --base=/room/ && esbuild vps-relay/server.ts --bundle --platform=node --format=esm --target=node22 --outfile=dist-server/server.mjs",
+    "typecheck:relay": "tsc -p relay-worker/tsconfig.json",
+    "deploy:relay": "wrangler deploy --config relay-worker/wrangler.jsonc",
+    "deploy:pages": "wrangler pages deploy dist --project-name oc-voice-lab --branch main --commit-dirty=true",
+    "deploy:legacy-worker": "wrangler deploy --config wrangler.worker.jsonc",
+    "test": "vitest tests",
+    "deploy": "npm run build && npm run deploy:pages"
+  },
+  "dependencies": {
+    "ws": "8.21.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20260723.1",
+    "@types/node": "24.10.1",
+    "@types/ws": "8.18.1",
+    "typescript": "7.0.2",
+    "vite": "8.1.5",
+    "vitest": "4.1.10",
+    "wrangler": "4.113.0"
+  }
+}

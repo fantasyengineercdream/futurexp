@@ -1,0 +1,49 @@
+{
+  "actorId": "oc-angel",
+  "capabilities": {
+    "diary": true,
+    "privateOs": true,
+    "realtimeConversation": false,
+    "rest": true
+  },
+  "currentLocationId": "apartment-library",
+  "decisionBasisSummary": null,
+  "decisionMemoryRefs": [],
+  "isHome": false,
+  "latestDiary": {
+    "available": true,
+    "createdAt": "2026-07-24T00:00:02Z",
+    "entryId": "diary:fixture-product-v02:oc-angel:1",
+    "summary": "今天我和同处的人有过一次日常交谈。内容并不惊天动地，但我会记得彼此当时的态度。"
+  },
+  "presence": "public",
+  "privateOsAvailable": true,
+  "privateOsRef": "private-os:fixture-product-v02:round-1:canonical-batch:oc-angel",
+  "publicActivitySummary": "正在与其他居民交谈",
+  "publicExpression": "今天只是普通相处，但我会记得他们说过的话。",
+  "publicMood": "笃定",
+  "recentExperienceRefs": [
+    "experience:fixture-product-v02:1:oc-angel:0",
+    "experience:fixture-product-v02:1:oc-angel:1"
+  ],
+  "relationshipSummaries": [
+    {
+      "changedRecently": true,
+      "displayName": "恶魔 OC",
+      "residentId": "resident-cc",
+      "stateLabel": "保持戒心"
+    },
+    {
+      "changedRecently": false,
+      "displayName": "用户 OC",
+      "residentId": "resident-demo-user",
+      "stateLabel": "相互信任"
+    }
+  ],
+  "residentId": "resident-oo",
+  "roomId": "room-oo",
+  "runId": "fixture-product-v02",
+  "schemaVersion": "0.2",
+  "updatedAt": "2026-07-24T00:00:02Z",
+  "worldVersion": 2
+}

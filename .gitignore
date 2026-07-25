@@ -1,0 +1,45 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+.dev.vars
+*.pem
+*.key
+*.p12
+*.pfx
+oc-hardware-device.generated.env
+
+# Runtime data
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.log
+*.pid
+
+# Dependencies and build output
+node_modules/
+.venv/
+venv/
+dist/
+dist-server/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+coverage/
+
+# Agent, deployment and local QA state
+.gstack/
+.superpowers/
+.wrangler/
+.wrangler-dry-run/
+.worktrees/
+.tmp*/
+artifacts/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+

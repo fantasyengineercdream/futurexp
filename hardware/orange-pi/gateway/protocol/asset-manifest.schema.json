@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oc.local/protocol/asset-manifest.schema.json",
+  "title": "OC e-ink asset manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "asset_id",
+    "asset_version",
+    "width",
+    "height",
+    "bit_depth",
+    "frame_count",
+    "frame_duration_ms",
+    "loopable",
+    "sha256"
+  ],
+  "properties": {
+    "asset_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "asset_version": { "type": "integer", "minimum": 1 },
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "bit_depth": { "enum": [1, 2, 4, 8] },
+    "frame_count": { "type": "integer", "minimum": 1 },
+    "frame_duration_ms": { "type": "integer", "minimum": 1 },
+    "loopable": { "type": "boolean" },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

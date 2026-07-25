@@ -1,0 +1,18 @@
+[Unit]
+Description=OC Orange Pi Hardware Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=orangepi
+WorkingDirectory=/opt/oocc/hardware/orange-pi/gateway
+EnvironmentFile=/etc/oc-gatewayd.env
+ExecStart=/opt/oocc/hardware/orange-pi/gateway/.venv/bin/oc-gateway
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

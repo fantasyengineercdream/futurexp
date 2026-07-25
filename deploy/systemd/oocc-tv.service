@@ -1,0 +1,18 @@
+[Unit]
+Description=OOCC Infinite Channel TV
+After=network.target oocc-api.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/oocc/apps/tv/Tower
+Environment=PORT=5177
+Environment=TV_DEMO_API_BASE=http://127.0.0.1:8000
+ExecStart=/usr/bin/node demo-server.cjs
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+

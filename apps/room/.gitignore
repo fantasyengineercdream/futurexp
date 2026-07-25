@@ -1,0 +1,6 @@
+.worktrees/
+node_modules/
+dist/
+.wrangler-dry-run/
+.dev.vars
+.wrangler/

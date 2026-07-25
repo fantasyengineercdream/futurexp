@@ -1,0 +1,112 @@
+{
+  "floors": [
+    {
+      "floorId": "floor-safe",
+      "kind": "safe",
+      "label": "安全层",
+      "paletteKey": "safe-home",
+      "status": "active"
+    },
+    {
+      "floorId": "floor-neutral",
+      "kind": "neutral",
+      "label": "公共层",
+      "paletteKey": "neutral-public",
+      "status": "quiet"
+    },
+    {
+      "floorId": "floor-adventure",
+      "kind": "adventure",
+      "label": "冒险层",
+      "paletteKey": "adventure-signal",
+      "status": "active"
+    }
+  ],
+  "publicScenes": [
+    {
+      "locationId": "apartment-library",
+      "participantIds": [
+        "resident-oo",
+        "resident-cc",
+        "resident-demo-user"
+      ],
+      "publicSummary": "今天是普通的日常；居民按照自己的安排去了不同空间。同处一地的人获得了交谈机会：有人主动交谈，也有人选择保持安静。",
+      "sceneId": "scene:fixture-product-v02:1",
+      "status": "resolved"
+    }
+  ],
+  "residents": [
+    {
+      "actorId": "oc-angel",
+      "currentLocationId": "apartment-library",
+      "displayName": "天使 OC",
+      "floorId": "floor-safe",
+      "lastChangedAt": "2026-07-24T00:00:02Z",
+      "newExperience": true,
+      "presence": "public",
+      "publicActivitySummary": "正在与其他居民交谈",
+      "residentId": "resident-oo",
+      "roomAvailable": true,
+      "roomId": "room-oo"
+    },
+    {
+      "actorId": "oc-devil",
+      "currentLocationId": "apartment-library",
+      "displayName": "恶魔 OC",
+      "floorId": "floor-safe",
+      "lastChangedAt": "2026-07-24T00:00:02Z",
+      "newExperience": true,
+      "presence": "public",
+      "publicActivitySummary": "正在安静地度过自己的时间",
+      "residentId": "resident-cc",
+      "roomAvailable": true,
+      "roomId": "room-cc"
+    },
+    {
+      "actorId": "oc-user",
+      "currentLocationId": "mirror-curtain",
+      "displayName": "用户 OC",
+      "floorId": "floor-safe",
+      "lastChangedAt": "2026-07-24T00:00:02Z",
+      "newExperience": true,
+      "presence": "home",
+      "publicActivitySummary": "正在与其他居民交谈",
+      "residentId": "resident-demo-user",
+      "roomAvailable": true,
+      "roomId": "room-demo-user"
+    }
+  ],
+  "rooms": [
+    {
+      "floorId": "floor-safe",
+      "label": "天使 OC 的房间",
+      "roomId": "room-oo",
+      "roomKind": "private",
+      "screenId": "screen-oo",
+      "signalState": "public"
+    },
+    {
+      "floorId": "floor-safe",
+      "label": "恶魔 OC 的房间",
+      "roomId": "room-cc",
+      "roomKind": "private",
+      "screenId": "screen-cc",
+      "signalState": "public"
+    },
+    {
+      "floorId": "floor-safe",
+      "label": "用户 OC 的房间",
+      "roomId": "room-demo-user",
+      "roomKind": "private",
+      "screenId": "screen-demo-user",
+      "signalState": "home"
+    }
+  ],
+  "roundStatus": "committed",
+  "runId": "fixture-product-v02",
+  "schemaVersion": "0.2",
+  "summary": "世界已完成一轮原子更新；居民状态和公开经历可以安全刷新。",
+  "tickIndex": 1,
+  "updatedAt": "2026-07-24T00:00:02Z",
+  "worldVersion": 2
+}

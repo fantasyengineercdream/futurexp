@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oc.local/protocol/display-ack.schema.json",
+  "title": "OC display acknowledgement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "task_id", "status"],
+  "properties": {
+    "version": { "const": 1 },
+    "task_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "status": {
+      "enum": ["accepted", "rendering", "completed", "failed", "cancelled"]
+    },
+    "error_code": { "type": ["string", "null"], "maxLength": 128 }
+  }
+}

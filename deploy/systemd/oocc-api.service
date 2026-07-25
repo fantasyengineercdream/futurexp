@@ -1,0 +1,17 @@
+[Unit]
+Description=OOCC Living World API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/oocc/services/api
+Environment=KALEIDOROOM_DB_PATH=/var/lib/oocc/kaleidoroom.sqlite3
+ExecStart=/opt/oocc/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+

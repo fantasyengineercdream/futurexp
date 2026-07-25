@@ -1,0 +1,156 @@
+{
+  "fixtureType": "living-world-runtime-bundle",
+  "bundleId": "preset-infinite-apartment-v01",
+  "bundleVersion": "0.1",
+  "worldFixture": "../infinite-apartment/world.json",
+  "defaultSeed": "demo-pov-distinct-v1",
+  "roundCount": 2,
+  "initialLocations": {
+    "oc-user": "mirror-curtain",
+    "oc-angel": "mirror-curtain",
+    "oc-devil": "mirror-curtain"
+  },
+  "locationExtensions": [
+    {
+      "locationId": "apartment-bar",
+      "name": "公寓酒吧",
+      "description": "安全层里的公共休息空间，适合短暂见面和交谈。",
+      "occludesSightFor": [],
+      "layer": "safe",
+      "persistence": "persistent",
+      "returnLocationId": null
+    },
+    {
+      "locationId": "apartment-library",
+      "name": "公寓图书馆",
+      "description": "安全层里的安静公共空间，适合阅读、核对信息和偶遇。",
+      "occludesSightFor": [],
+      "layer": "safe",
+      "persistence": "persistent",
+      "returnLocationId": null
+    },
+    {
+      "locationId": "adventure-instance-01",
+      "name": "临时冒险房间",
+      "description": "一次运行期事件实例；结束后角色返回安全层，并保留经历与后果。",
+      "occludesSightFor": [],
+      "layer": "adventure",
+      "persistence": "eventInstance",
+      "returnLocationId": "mirror-curtain"
+    }
+  ],
+  "objectExtensions": [
+    {
+      "objectId": "shared-badge",
+      "name": "公共空间通行牌",
+      "locationId": "mirror-curtain",
+      "holderId": "oc-user",
+      "tags": [
+        "shared-resource"
+      ]
+    }
+  ],
+  "ruleExtensions": [
+    {
+      "ruleId": "rule-location-transition",
+      "kind": "LOCATION_TRANSITION",
+      "label": "安全层与冒险层转换",
+      "description": "OC 只能通过自己的结构化 MOVE 提案自愿进入冒险实例，并从实例返回指定安全层。",
+      "enabled": true,
+      "params": {
+        "requireActorProposal": true,
+        "adventureToAdventureAllowed": false
+      }
+    }
+  ],
+  "actorProfiles": [
+    {
+      "ocId": "oc-user",
+      "personaConstraints": [
+        "保留自主选择",
+        "公开表达克制"
+      ],
+      "goalRefs": [
+        "goal-user-open-door"
+      ],
+      "initialMemories": [
+        "我从安全层开始今天的生活。"
+      ],
+      "homeLocationId": "mirror-curtain",
+      "dailyLocationPreferences": [
+        "mirror-curtain"
+      ],
+      "rpgStats": {
+        "intellect": 2,
+        "athletics": 1,
+        "insight": 3,
+        "presence": 1
+      },
+      "actionPreferences": [
+        "MOVE",
+        "WAIT",
+        "UTTERANCE"
+      ]
+    },
+    {
+      "ocId": "oc-angel",
+      "personaConstraints": [
+        "优先保护同伴",
+        "证据不足时保持警惕"
+      ],
+      "goalRefs": [
+        "goal-angel-protect"
+      ],
+      "initialMemories": [
+        "我会留意公共空间里的风险。"
+      ],
+      "homeLocationId": "mirror-curtain",
+      "dailyLocationPreferences": [
+        "apartment-library",
+        "apartment-bar",
+        "grand-foyer"
+      ],
+      "rpgStats": {
+        "intellect": 2,
+        "athletics": 0,
+        "insight": 4,
+        "presence": 2
+      },
+      "actionPreferences": [
+        "UTTERANCE",
+        "TAKE",
+        "WAIT"
+      ]
+    },
+    {
+      "ocId": "oc-devil",
+      "personaConstraints": [
+        "行动直接",
+        "受阻后改用公开协商"
+      ],
+      "goalRefs": [
+        "goal-devil-open-door"
+      ],
+      "initialMemories": [
+        "我重视明确的选择和后果。"
+      ],
+      "homeLocationId": "mirror-curtain",
+      "dailyLocationPreferences": [
+        "apartment-library",
+        "apartment-bar",
+        "grand-foyer"
+      ],
+      "rpgStats": {
+        "intellect": 2,
+        "athletics": 3,
+        "insight": 0,
+        "presence": 4
+      },
+      "actionPreferences": [
+        "TAKE",
+        "UTTERANCE",
+        "WAIT"
+      ]
+    }
+  ]
+}

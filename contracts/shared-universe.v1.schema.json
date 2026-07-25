@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaleidoroom.local/contracts/shared-universe.v1.schema.json",
+  "title": "KaleidoRoom Shared Universe Contracts v1",
+  "oneOf": [
+    { "$ref": "#/$defs/OCIdentityV1" },
+    { "$ref": "#/$defs/CanonRevisionV1" },
+    { "$ref": "#/$defs/WorldInstanceV1" },
+    { "$ref": "#/$defs/CharacterPresenceV1" },
+    { "$ref": "#/$defs/CapabilityGrantV1" },
+    { "$ref": "#/$defs/CapabilityRevocationV1" },
+    { "$ref": "#/$defs/InvitationV1" },
+    { "$ref": "#/$defs/ProjectionPolicyV1" },
+    { "$ref": "#/$defs/SharedEventEnvelopeV1" },
+    { "$ref": "#/$defs/PortableMemorySummaryV1" }
+  ],
+  "$defs": {
+    "Uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "DateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "OCIdentityV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "oc.identity/v1" },
+        "ocId": { "$ref": "#/$defs/Uuid" },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "createdAt": { "$ref": "#/$defs/DateTime" },
+        "activeCanonRevisionId": { "$ref": "#/$defs/Uuid" }
+      },
+      "required": [
+        "schemaVersion",
+        "ocId",
+        "slug",
+        "createdAt",
+        "activeCanonRevisionId"
+      ],
+      "additionalProperties": false
+    },
+    "CanonRevisionV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "oc.canon-revision/v1" },
+        "canonRevisionId": { "$ref": "#/$defs/Uuid" },
+        "ocId": { "$ref": "#/$defs/Uuid" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "displayName": { "type": "string", "minLength": 1 },
+        "publicProfile": { "type": "object" },
+        "createdAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "canonRevisionId",
+        "ocId",
+        "revision",
+        "displayName",
+        "publicProfile",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "WorldInstanceV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "world.instance/v1" },
+        "worldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "worldDefinitionId": { "$ref": "#/$defs/Uuid" },
+        "worldDefinitionVersion": { "type": "string", "minLength": 1 },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "createdAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "worldInstanceId",
+        "worldDefinitionId",
+        "worldDefinitionVersion",
+        "slug",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "CharacterPresenceV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "character.presence/v1" },
+        "presenceId": { "$ref": "#/$defs/Uuid" },
+        "worldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "ocId": { "$ref": "#/$defs/Uuid" },
+        "canonRevisionId": { "$ref": "#/$defs/Uuid" },
+        "status": {
+          "enum": ["invited", "admitted", "departed"]
+        },
+        "runtimeStateRef": { "type": "string", "minLength": 1 },
+        "admittedAt": { "$ref": "#/$defs/DateTime" },
+        "departedAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "presenceId",
+        "worldInstanceId",
+        "ocId",
+        "canonRevisionId",
+        "status",
+        "runtimeStateRef"
+      ],
+      "additionalProperties": false
+    },
+    "CapabilityGrantV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "capability.grant/v1" },
+        "grantId": { "$ref": "#/$defs/Uuid" },
+        "subjectPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "issuerPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "worldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "invitationId": { "$ref": "#/$defs/Uuid" },
+        "capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "policyVersion": { "type": "integer", "minimum": 1 },
+        "issuedAt": { "$ref": "#/$defs/DateTime" },
+        "expiresAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "grantId",
+        "subjectPrincipalId",
+        "issuerPrincipalId",
+        "worldInstanceId",
+        "capabilities",
+        "policyVersion",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "CapabilityRevocationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "capability.revocation/v1" },
+        "revocationId": { "$ref": "#/$defs/Uuid" },
+        "grantId": { "$ref": "#/$defs/Uuid" },
+        "revokedByPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "reason": { "type": "string", "minLength": 1 },
+        "revokedAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "revocationId",
+        "grantId",
+        "revokedByPrincipalId",
+        "reason",
+        "revokedAt"
+      ],
+      "additionalProperties": false
+    },
+    "InvitationV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "invitation/v1" },
+        "invitationId": { "$ref": "#/$defs/Uuid" },
+        "worldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "ocId": { "$ref": "#/$defs/Uuid" },
+        "invitedByPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "invitedPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "status": {
+          "enum": ["pending", "accepted", "rejected", "expired", "revoked"]
+        },
+        "discoverySource": {
+          "enum": ["nfc", "qr", "link", "directory"]
+        },
+        "issuedAt": { "$ref": "#/$defs/DateTime" },
+        "expiresAt": { "$ref": "#/$defs/DateTime" },
+        "acceptedAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "invitationId",
+        "worldInstanceId",
+        "ocId",
+        "invitedByPrincipalId",
+        "invitedPrincipalId",
+        "status",
+        "discoverySource",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "AudienceSelectorV1": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": { "kind": { "const": "public" } },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "kind": { "const": "world_members" } },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "const": "principals" },
+            "principalIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/Uuid" }
+            }
+          },
+          "required": ["kind", "principalIds"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "const": "capability_holders" },
+            "capability": { "type": "string", "minLength": 1 }
+          },
+          "required": ["kind", "capability"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "kind": { "const": "none" } },
+          "required": ["kind"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": { "const": "legacy_demo" },
+            "legacyRefs": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "required": ["kind", "legacyRefs"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ProjectionPolicyV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "projection.policy/v1" },
+        "policyVersion": { "type": "integer", "minimum": 1 },
+        "sensitivity": {
+          "enum": [
+            "public",
+            "member",
+            "confidential",
+            "restricted",
+            "private"
+          ]
+        },
+        "dataClass": {
+          "enum": [
+            "world_event",
+            "world_observation",
+            "portable_memory",
+            "private_os",
+            "operator_diagnostic"
+          ]
+        },
+        "audienceSelector": { "$ref": "#/$defs/AudienceSelectorV1" },
+        "grantRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Uuid" }
+        },
+        "compatibilityMode": { "const": "demo-v1" }
+      },
+      "required": [
+        "schemaVersion",
+        "policyVersion",
+        "sensitivity",
+        "dataClass",
+        "audienceSelector",
+        "grantRefs"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "audienceSelector": {
+                "properties": { "kind": { "const": "legacy_demo" } },
+                "required": ["kind"]
+              }
+            }
+          },
+          "then": { "required": ["compatibilityMode"] },
+          "else": { "not": { "required": ["compatibilityMode"] } }
+        },
+        {
+          "if": {
+            "properties": {
+              "audienceSelector": {
+                "properties": { "kind": { "const": "public" } },
+                "required": ["kind"]
+              }
+            }
+          },
+          "then": {
+            "properties": { "sensitivity": { "const": "public" } }
+          }
+        },
+        {
+          "if": {
+            "properties": { "dataClass": { "const": "private_os" } }
+          },
+          "then": {
+            "properties": {
+              "sensitivity": { "const": "private" },
+              "audienceSelector": {
+                "properties": { "kind": { "const": "principals" } },
+                "required": ["kind"]
+              },
+              "grantRefs": { "minItems": 1 }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "SharedEventEnvelopeV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "shared.event/v1" },
+        "eventId": { "$ref": "#/$defs/Uuid" },
+        "worldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "occurredAt": { "$ref": "#/$defs/DateTime" },
+        "type": { "type": "string", "minLength": 1 },
+        "subjectOcId": { "$ref": "#/$defs/Uuid" },
+        "projectionPolicy": { "$ref": "#/$defs/ProjectionPolicyV1" },
+        "capabilityVersion": { "type": "string", "minLength": 1 },
+        "idempotencyKey": { "type": "string", "minLength": 1 },
+        "cancellationKey": { "type": "string", "minLength": 1 },
+        "causationId": { "$ref": "#/$defs/Uuid" },
+        "payload": { "type": "object" }
+      },
+      "required": [
+        "schemaVersion",
+        "eventId",
+        "worldInstanceId",
+        "sequence",
+        "occurredAt",
+        "type",
+        "projectionPolicy",
+        "capabilityVersion",
+        "idempotencyKey",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "PortableMemorySummaryV1": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": "portable-memory.summary/v1" },
+        "memorySummaryId": { "$ref": "#/$defs/Uuid" },
+        "ocId": { "$ref": "#/$defs/Uuid" },
+        "sourceWorldInstanceId": { "$ref": "#/$defs/Uuid" },
+        "sourceEventIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Uuid" }
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "approvedByPrincipalId": { "$ref": "#/$defs/Uuid" },
+        "createdAt": { "$ref": "#/$defs/DateTime" }
+      },
+      "required": [
+        "schemaVersion",
+        "memorySummaryId",
+        "ocId",
+        "sourceWorldInstanceId",
+        "sourceEventIds",
+        "summary",
+        "approvedByPrincipalId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

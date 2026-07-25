@@ -1,0 +1,20 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "oc-device-relay",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-24",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DEVICE_ROOMS",
+        "class_name": "DeviceRelayRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DeviceRelayRoom"]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "fixture-product-v02",
+  "residentId": "resident-oo",
+  "actorId": "oc-angel",
+  "publicReply": "我只会按自己真正看见和记住的部分告诉你。今天我和同处的人有过一次日常交谈。内容并不惊天动地，但我会记得彼此当时的态度。至于你问的“今天在外面发生了什么？”，我仍会守住“优先保护同伴”这条底线。",
+  "memoryRefsUsed": [
+    "memory:0:oc-angel:fixture-product-v02:round-0:oc-devil:proposal:provisional-arrival",
+    "memory:1:oc-angel:fixture-product-v02:round-1:oc-angel:proposal:provisional-heard",
+    "memory:1:oc-angel:fixture-product-v02:round-1:oc-devil:proposal:provisional-present"
+  ],
+  "privateOsAvailable": true,
+  "privateOsRef": "private-os:fixture-product-v02:oc-angel:dialogue:2"
+}

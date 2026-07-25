@@ -1,0 +1,366 @@
+{
+  "$defs": {
+    "ActorScheduleState": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "locationId": {
+          "title": "Locationid",
+          "type": "string"
+        },
+        "activityLabel": {
+          "title": "Activitylabel",
+          "type": "string"
+        },
+        "inSharedEvent": {
+          "title": "Insharedevent",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "actorId",
+        "locationId",
+        "activityLabel",
+        "inSharedEvent"
+      ],
+      "title": "ActorScheduleState",
+      "type": "object"
+    },
+    "DayActorProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "displayName": {
+          "title": "Displayname",
+          "type": "string"
+        },
+        "desiredLocationId": {
+          "title": "Desiredlocationid",
+          "type": "string"
+        },
+        "activityLabel": {
+          "title": "Activitylabel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "actorId",
+        "displayName",
+        "desiredLocationId",
+        "activityLabel"
+      ],
+      "title": "DayActorProjection",
+      "type": "object"
+    },
+    "DayEventProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "eventRef": {
+          "title": "Eventref",
+          "type": "string"
+        },
+        "locationId": {
+          "title": "Locationid",
+          "type": "string"
+        },
+        "participantIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Participantids",
+          "type": "array"
+        },
+        "hook": {
+          "title": "Hook",
+          "type": "string"
+        },
+        "stakes": {
+          "title": "Stakes",
+          "type": "string"
+        },
+        "intents": {
+          "items": {
+            "$ref": "#/$defs/EventIntent"
+          },
+          "title": "Intents",
+          "type": "array"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/RpgCheckResult"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "publicNarrative": {
+          "title": "Publicnarrative",
+          "type": "string"
+        }
+      },
+      "required": [
+        "eventRef",
+        "locationId",
+        "participantIds",
+        "hook",
+        "stakes",
+        "intents",
+        "checks",
+        "publicNarrative"
+      ],
+      "title": "DayEventProjection",
+      "type": "object"
+    },
+    "DayMemoryRefProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "memoryRef": {
+          "title": "Memoryref",
+          "type": "string"
+        },
+        "available": {
+          "const": true,
+          "default": true,
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "actorId",
+        "memoryRef"
+      ],
+      "title": "DayMemoryRefProjection",
+      "type": "object"
+    },
+    "DayScheduleFrame": {
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "enum": [
+            "planned",
+            "travelling",
+            "arrived",
+            "in_event",
+            "complete"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "actors": {
+          "items": {
+            "$ref": "#/$defs/ActorScheduleState"
+          },
+          "title": "Actors",
+          "type": "array"
+        },
+        "advancedBy": {
+          "const": "scheduler",
+          "default": "scheduler",
+          "title": "Advancedby",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase",
+        "actors"
+      ],
+      "title": "DayScheduleFrame",
+      "type": "object"
+    },
+    "EventIntent": {
+      "additionalProperties": false,
+      "properties": {
+        "intentId": {
+          "title": "Intentid",
+          "type": "string"
+        },
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "eventId": {
+          "title": "Eventid",
+          "type": "string"
+        },
+        "goal": {
+          "title": "Goal",
+          "type": "string"
+        },
+        "approach": {
+          "title": "Approach",
+          "type": "string"
+        },
+        "requestedAttribute": {
+          "enum": [
+            "intellect",
+            "athletics",
+            "insight",
+            "presence"
+          ],
+          "title": "Requestedattribute",
+          "type": "string"
+        },
+        "acceptedLocationId": {
+          "title": "Acceptedlocationid",
+          "type": "string"
+        },
+        "proposedBy": {
+          "const": "oca",
+          "default": "oca",
+          "title": "Proposedby",
+          "type": "string"
+        }
+      },
+      "required": [
+        "intentId",
+        "actorId",
+        "eventId",
+        "goal",
+        "approach",
+        "requestedAttribute",
+        "acceptedLocationId"
+      ],
+      "title": "EventIntent",
+      "type": "object"
+    },
+    "RpgCheckResult": {
+      "additionalProperties": false,
+      "properties": {
+        "checkId": {
+          "title": "Checkid",
+          "type": "string"
+        },
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "attribute": {
+          "enum": [
+            "intellect",
+            "athletics",
+            "insight",
+            "presence"
+          ],
+          "title": "Attribute",
+          "type": "string"
+        },
+        "dieRoll": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Dieroll",
+          "type": "integer"
+        },
+        "modifier": {
+          "title": "Modifier",
+          "type": "integer"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        },
+        "dc": {
+          "title": "Dc",
+          "type": "integer"
+        },
+        "succeeded": {
+          "title": "Succeeded",
+          "type": "boolean"
+        },
+        "resolvedBy": {
+          "const": "ruleEngine",
+          "default": "ruleEngine",
+          "title": "Resolvedby",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkId",
+        "actorId",
+        "attribute",
+        "dieRoll",
+        "modifier",
+        "total",
+        "dc",
+        "succeeded"
+      ],
+      "title": "RpgCheckResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "dayIndex": {
+      "title": "Dayindex",
+      "type": "integer"
+    },
+    "actors": {
+      "items": {
+        "$ref": "#/$defs/DayActorProjection"
+      },
+      "title": "Actors",
+      "type": "array"
+    },
+    "timeline": {
+      "items": {
+        "$ref": "#/$defs/DayScheduleFrame"
+      },
+      "title": "Timeline",
+      "type": "array"
+    },
+    "event": {
+      "$ref": "#/$defs/DayEventProjection"
+    },
+    "memoryRefs": {
+      "items": {
+        "$ref": "#/$defs/DayMemoryRefProjection"
+      },
+      "title": "Memoryrefs",
+      "type": "array"
+    },
+    "worldVersion": {
+      "title": "Worldversion",
+      "type": "integer"
+    },
+    "worldHash": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Worldhash",
+      "type": "string"
+    },
+    "replayVerified": {
+      "title": "Replayverified",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "runId",
+    "dayIndex",
+    "actors",
+    "timeline",
+    "event",
+    "memoryRefs",
+    "worldVersion",
+    "worldHash",
+    "replayVerified"
+  ],
+  "title": "LivingWorldDayProjectionDTO",
+  "type": "object"
+}

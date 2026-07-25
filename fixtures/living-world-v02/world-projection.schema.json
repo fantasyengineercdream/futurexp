@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "FloorProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "floorId": {
+          "title": "Floorid",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "safe",
+            "neutral",
+            "adventure"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "paletteKey": {
+          "title": "Palettekey",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "quiet",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "floorId",
+        "label",
+        "kind",
+        "paletteKey",
+        "status"
+      ],
+      "title": "FloorProjection",
+      "type": "object"
+    },
+    "PublicSceneProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "sceneId": {
+          "title": "Sceneid",
+          "type": "string"
+        },
+        "locationId": {
+          "title": "Locationid",
+          "type": "string"
+        },
+        "participantIds": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Participantids",
+          "type": "array"
+        },
+        "publicSummary": {
+          "title": "Publicsummary",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "available",
+            "active",
+            "resolved",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sceneId",
+        "locationId",
+        "participantIds",
+        "publicSummary",
+        "status"
+      ],
+      "title": "PublicSceneProjection",
+      "type": "object"
+    },
+    "ResidentProductProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "residentId": {
+          "title": "Residentid",
+          "type": "string"
+        },
+        "actorId": {
+          "title": "Actorid",
+          "type": "string"
+        },
+        "displayName": {
+          "title": "Displayname",
+          "type": "string"
+        },
+        "roomId": {
+          "title": "Roomid",
+          "type": "string"
+        },
+        "floorId": {
+          "title": "Floorid",
+          "type": "string"
+        },
+        "currentLocationId": {
+          "title": "Currentlocationid",
+          "type": "string"
+        },
+        "presence": {
+          "enum": [
+            "home",
+            "public",
+            "adventure",
+            "resting",
+            "away"
+          ],
+          "title": "Presence",
+          "type": "string"
+        },
+        "publicActivitySummary": {
+          "title": "Publicactivitysummary",
+          "type": "string"
+        },
+        "newExperience": {
+          "title": "Newexperience",
+          "type": "boolean"
+        },
+        "roomAvailable": {
+          "title": "Roomavailable",
+          "type": "boolean"
+        },
+        "lastChangedAt": {
+          "format": "date-time",
+          "title": "Lastchangedat",
+          "type": "string"
+        }
+      },
+      "required": [
+        "residentId",
+        "actorId",
+        "displayName",
+        "roomId",
+        "floorId",
+        "currentLocationId",
+        "presence",
+        "publicActivitySummary",
+        "newExperience",
+        "roomAvailable",
+        "lastChangedAt"
+      ],
+      "title": "ResidentProductProjection",
+      "type": "object"
+    },
+    "RoomSummaryProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "roomId": {
+          "title": "Roomid",
+          "type": "string"
+        },
+        "floorId": {
+          "title": "Floorid",
+          "type": "string"
+        },
+        "screenId": {
+          "title": "Screenid",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "roomKind": {
+          "enum": [
+            "private",
+            "public",
+            "adventure"
+          ],
+          "title": "Roomkind",
+          "type": "string"
+        },
+        "signalState": {
+          "enum": [
+            "home",
+            "public",
+            "adventure",
+            "resting",
+            "away"
+          ],
+          "title": "Signalstate",
+          "type": "string"
+        }
+      },
+      "required": [
+        "roomId",
+        "floorId",
+        "screenId",
+        "label",
+        "roomKind",
+        "signalState"
+      ],
+      "title": "RoomSummaryProjection",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2",
+      "default": "0.2",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "worldVersion": {
+      "title": "Worldversion",
+      "type": "integer"
+    },
+    "tickIndex": {
+      "title": "Tickindex",
+      "type": "integer"
+    },
+    "updatedAt": {
+      "format": "date-time",
+      "title": "Updatedat",
+      "type": "string"
+    },
+    "floors": {
+      "items": {
+        "$ref": "#/$defs/FloorProjection"
+      },
+      "title": "Floors",
+      "type": "array"
+    },
+    "rooms": {
+      "items": {
+        "$ref": "#/$defs/RoomSummaryProjection"
+      },
+      "title": "Rooms",
+      "type": "array"
+    },
+    "residents": {
+      "items": {
+        "$ref": "#/$defs/ResidentProductProjection"
+      },
+      "title": "Residents",
+      "type": "array"
+    },
+    "publicScenes": {
+      "items": {
+        "$ref": "#/$defs/PublicSceneProjection"
+      },
+      "title": "Publicscenes",
+      "type": "array"
+    },
+    "roundStatus": {
+      "enum": [
+        "idle",
+        "running",
+        "committed",
+        "failed"
+      ],
+      "title": "Roundstatus",
+      "type": "string"
+    },
+    "summary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Summary"
+    }
+  },
+  "required": [
+    "runId",
+    "worldVersion",
+    "tickIndex",
+    "updatedAt",
+    "floors",
+    "rooms",
+    "residents",
+    "publicScenes",
+    "roundStatus"
+  ],
+  "title": "WorldProjectionDTO",
+  "type": "object"
+}

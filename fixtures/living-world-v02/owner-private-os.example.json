@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "fixture-product-v02",
+  "worldVersion": 2,
+  "residentId": "resident-oo",
+  "actorId": "oc-angel",
+  "privateOsRef": "private-os:fixture-product-v02:oc-angel:dialogue:2",
+  "text": "其实我还在担心自己是不是漏看了什么。我不想让你担心，所以刚才说得比心里平静。",
+  "memoryRefsUsed": [
+    "memory:0:oc-angel:fixture-product-v02:round-0:oc-devil:proposal:provisional-arrival",
+    "memory:1:oc-angel:fixture-product-v02:round-1:oc-angel:proposal:provisional-heard",
+    "memory:1:oc-angel:fixture-product-v02:round-1:oc-devil:proposal:provisional-present"
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "schemaVersion": "0.1",
+  "runId": "fixture-day-loop-v01",
+  "dayIndex": 1,
+  "actors": [
+    {
+      "actorId": "oc-angel",
+      "displayName": "天使 OC",
+      "desiredLocationId": "apartment-library",
+      "activityLabel": "按“优先保护同伴”安排今天的生活"
+    },
+    {
+      "actorId": "oc-devil",
+      "displayName": "恶魔 OC",
+      "desiredLocationId": "apartment-library",
+      "activityLabel": "按“行动直接”安排今天的生活"
+    },
+    {
+      "actorId": "oc-user",
+      "displayName": "用户 OC",
+      "desiredLocationId": "mirror-curtain",
+      "activityLabel": "按“保留自主选择”安排今天的生活"
+    }
+  ],
+  "timeline": [
+    {
+      "phase": "planned",
+      "actors": [
+        {
+          "actorId": "oc-angel",
+          "locationId": "mirror-curtain",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-devil",
+          "locationId": "mirror-curtain",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-user",
+          "locationId": "mirror-curtain",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        }
+      ],
+      "advancedBy": "scheduler"
+    },
+    {
+      "phase": "travelling",
+      "actors": [
+        {
+          "actorId": "oc-angel",
+          "locationId": "mirror-curtain",
+          "activityLabel": "前往目的地",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-devil",
+          "locationId": "mirror-curtain",
+          "activityLabel": "前往目的地",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-user",
+          "locationId": "mirror-curtain",
+          "activityLabel": "前往目的地",
+          "inSharedEvent": false
+        }
+      ],
+      "advancedBy": "scheduler"
+    },
+    {
+      "phase": "arrived",
+      "actors": [
+        {
+          "actorId": "oc-angel",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-devil",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-user",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        }
+      ],
+      "advancedBy": "scheduler"
+    },
+    {
+      "phase": "in_event",
+      "actors": [
+        {
+          "actorId": "oc-angel",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": true
+        },
+        {
+          "actorId": "oc-devil",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": true
+        },
+        {
+          "actorId": "oc-user",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": true
+        }
+      ],
+      "advancedBy": "scheduler"
+    },
+    {
+      "phase": "complete",
+      "actors": [
+        {
+          "actorId": "oc-angel",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-devil",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        },
+        {
+          "actorId": "oc-user",
+          "locationId": "apartment-library",
+          "activityLabel": "参与今天的共同事件",
+          "inSharedEvent": false
+        }
+      ],
+      "advancedBy": "scheduler"
+    }
+  ],
+  "event": {
+    "eventRef": "fixture-day-loop-v01:day-1:shared-event",
+    "locationId": "apartment-library",
+    "participantIds": [
+      "oc-angel",
+      "oc-devil",
+      "oc-user"
+    ],
+    "hook": "公共空间出现了一件需要几位 OC 一起处理的小插曲。",
+    "stakes": "不同做法会带来成功、失败和关系变化。",
+    "intents": [
+      {
+        "intentId": "fixture-day-loop-v01:day-1:shared-event:oc-angel",
+        "actorId": "oc-angel",
+        "eventId": "fixture-day-loop-v01:day-1:shared-event",
+        "goal": "goal-angel-protect",
+        "approach": "优先保护同伴",
+        "requestedAttribute": "insight",
+        "acceptedLocationId": "apartment-library",
+        "proposedBy": "oca"
+      },
+      {
+        "intentId": "fixture-day-loop-v01:day-1:shared-event:oc-devil",
+        "actorId": "oc-devil",
+        "eventId": "fixture-day-loop-v01:day-1:shared-event",
+        "goal": "goal-devil-open-door",
+        "approach": "行动直接",
+        "requestedAttribute": "presence",
+        "acceptedLocationId": "apartment-library",
+        "proposedBy": "oca"
+      },
+      {
+        "intentId": "fixture-day-loop-v01:day-1:shared-event:oc-user",
+        "actorId": "oc-user",
+        "eventId": "fixture-day-loop-v01:day-1:shared-event",
+        "goal": "goal-user-open-door",
+        "approach": "保留自主选择",
+        "requestedAttribute": "insight",
+        "acceptedLocationId": "apartment-library",
+        "proposedBy": "oca"
+      }
+    ],
+    "checks": [
+      {
+        "checkId": "fixture-day-loop-v01:day-1:shared-event:oc-angel:check",
+        "actorId": "oc-angel",
+        "attribute": "insight",
+        "dieRoll": 8,
+        "modifier": 4,
+        "total": 12,
+        "dc": 11,
+        "succeeded": true,
+        "resolvedBy": "ruleEngine"
+      },
+      {
+        "checkId": "fixture-day-loop-v01:day-1:shared-event:oc-devil:check",
+        "actorId": "oc-devil",
+        "attribute": "presence",
+        "dieRoll": 3,
+        "modifier": 4,
+        "total": 7,
+        "dc": 11,
+        "succeeded": false,
+        "resolvedBy": "ruleEngine"
+      },
+      {
+        "checkId": "fixture-day-loop-v01:day-1:shared-event:oc-user:check",
+        "actorId": "oc-user",
+        "attribute": "insight",
+        "dieRoll": 16,
+        "modifier": 3,
+        "total": 19,
+        "dc": 10,
+        "succeeded": true,
+        "resolvedBy": "ruleEngine"
+      }
+    ],
+    "publicNarrative": "oc-angel 的insight检定成功（12 vs DC11）；oc-devil 的presence检定失败（7 vs DC11）；oc-user 的insight检定成功（19 vs DC10）。"
+  },
+  "memoryRefs": [
+    {
+      "actorId": "oc-angel",
+      "memoryRef": "memory:day-1:oc-angel",
+      "available": true
+    },
+    {
+      "actorId": "oc-devil",
+      "memoryRef": "memory:day-1:oc-devil",
+      "available": true
+    },
+    {
+      "actorId": "oc-user",
+      "memoryRef": "memory:day-1:oc-user",
+      "available": true
+    }
+  ],
+  "worldVersion": 1,
+  "worldHash": "70a315eb06bcd503bacc4d3f95602e41c650f266bf7c84fd4dd2b93ab72d1604",
+  "replayVerified": true
+}

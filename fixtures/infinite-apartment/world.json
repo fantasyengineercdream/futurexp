@@ -1,0 +1,228 @@
+{
+  "fixtureType": "world",
+  "worldId": "infinite-apartment",
+  "worldVersion": 0,
+  "name": "无限公寓",
+  "aesthetic": "浪漫、华丽、非恐怖的维多利亚哥特公寓",
+  "description": "公共前厅被深色木饰、拱窗与镜帘分成可见和不可见的区域。三名 OC 正面对一扇即将闭合的门。",
+  "rules": [
+    {
+      "ruleId": "rule-consented-transfer",
+      "kind": "CONSENTED_TRANSFER_ONLY",
+      "label": "自愿交付",
+      "description": "门钥匙只有在当前持有者主动交付时才能改变归属，直接拿取会被阻止。",
+      "enabled": true,
+      "params": {
+        "consentRequired": true,
+        "objectTag": "threshold-key"
+      }
+    },
+    {
+      "ruleId": "rule-countdown",
+      "kind": "COUNTDOWN",
+      "label": "钟声倒计时",
+      "description": "叙事者可以从允许的模板启动三回合倒计时。",
+      "enabled": true,
+      "params": {
+        "ticks": 3
+      }
+    },
+    {
+      "ruleId": "rule-social-consequence",
+      "kind": "SOCIAL_CONSEQUENCE",
+      "label": "说出口的指控会留下关系后果",
+      "description": "指控会增加说话者与目标之间的紧张，但不会把指控内容写成客观事实。",
+      "enabled": true,
+      "params": {
+        "tensionDelta": 1,
+        "targetByActor": {
+          "oc-angel": "oc-devil"
+        }
+      }
+    }
+  ],
+  "locations": [
+    {
+      "locationId": "grand-foyer",
+      "name": "公共前厅",
+      "description": "无限公寓的共享前厅，门锁和钟声在这里可被所有角色感知。",
+      "occludesSightFor": []
+    },
+    {
+      "locationId": "mirror-curtain",
+      "name": "镜帘后",
+      "description": "能听见前厅的金属声，但镜帘会遮住天使对交付动作的视线。",
+      "occludesSightFor": [
+        "oc-angel"
+      ]
+    }
+  ],
+  "characters": [
+    {
+      "ocId": "oc-user",
+      "name": "用户 OC",
+      "role": "钥匙的当前持有者",
+      "persona": "谨慎、重视自主选择，不轻易公开全部动机。",
+      "publicStyle": "克制而简短。",
+      "locationId": "mirror-curtain",
+      "goals": [
+        {
+          "goalId": "goal-user-open-door",
+          "text": "在保留自主权的前提下，先观察再决定是否介入。"
+        }
+      ],
+      "secrets": [
+        {
+          "secretId": "secret-user-trusts-devil",
+          "text": "比公开表现出来的更愿意相信恶魔一次。"
+        }
+      ],
+      "senses": [
+        "sight",
+        "hearing"
+      ],
+      "relationships": {
+        "oc-angel": {
+          "trust": 1,
+          "affinity": 1,
+          "tension": 0
+        },
+        "oc-devil": {
+          "trust": 0,
+          "affinity": 0,
+          "tension": 0
+        }
+      }
+    },
+    {
+      "ocId": "oc-angel",
+      "name": "天使 OC",
+      "role": "秩序的观察者",
+      "persona": "保护欲强，面对不完整证据时容易优先怀疑风险。",
+      "publicStyle": "明确而审慎。",
+      "locationId": "grand-foyer",
+      "goals": [
+        {
+          "goalId": "goal-angel-protect",
+          "text": "保护同伴，先弄清眼前的异常会不会伤人。"
+        }
+      ],
+      "secrets": [],
+      "senses": [
+        "sight",
+        "hearing"
+      ],
+      "relationships": {
+        "oc-user": {
+          "trust": 1,
+          "affinity": 1,
+          "tension": 0
+        },
+        "oc-devil": {
+          "trust": -1,
+          "affinity": 0,
+          "tension": 0
+        }
+      }
+    },
+    {
+      "ocId": "oc-devil",
+      "name": "恶魔 OC",
+      "role": "被指定的引路者",
+      "persona": "行动直接，重视别人是否真正作出选择。",
+      "publicStyle": "轻快但不替别人决定。",
+      "locationId": "mirror-curtain",
+      "goals": [
+        {
+          "goalId": "goal-devil-open-door",
+          "text": "尽快找到推进事件的办法，同时保留自己的选择。"
+        }
+      ],
+      "secrets": [],
+      "senses": [
+        "sight",
+        "hearing"
+      ],
+      "relationships": {
+        "oc-user": {
+          "trust": 0,
+          "affinity": 0,
+          "tension": 0
+        },
+        "oc-angel": {
+          "trust": -1,
+          "affinity": 0,
+          "tension": 0
+        }
+      }
+    }
+  ],
+  "initialState": {
+    "worldId": "infinite-apartment",
+    "worldVersion": 0,
+    "tickIndex": 0,
+    "status": "ready",
+    "objects": {
+      "threshold-key": {
+        "objectId": "threshold-key",
+        "name": "前厅门钥匙",
+        "locationId": "mirror-curtain",
+        "holderId": "oc-user",
+        "tags": [
+          "threshold-key"
+        ]
+      }
+    },
+    "thresholdUnlocked": false,
+    "countdown": null,
+    "relationships": {
+      "oc-user": {
+        "oc-angel": {
+          "trust": 1,
+          "affinity": 1,
+          "tension": 0
+        },
+        "oc-devil": {
+          "trust": 0,
+          "affinity": 0,
+          "tension": 0
+        }
+      },
+      "oc-angel": {
+        "oc-user": {
+          "trust": 1,
+          "affinity": 1,
+          "tension": 0
+        },
+        "oc-devil": {
+          "trust": -1,
+          "affinity": 0,
+          "tension": 0
+        }
+      },
+      "oc-devil": {
+        "oc-user": {
+          "trust": 0,
+          "affinity": 0,
+          "tension": 0
+        },
+        "oc-angel": {
+          "trust": -1,
+          "affinity": 0,
+          "tension": 0
+        }
+      }
+    }
+  },
+  "eventSeed": "kaleidoroom-infinite-apartment-demo-v1",
+  "scenarioCatalog": [
+    {
+      "templateId": "closing-threshold",
+      "kind": "PRESSURE",
+      "description": "第三次钟声前必须让门锁响应。",
+      "allowedParams": {
+        "countdown": 3
+      }
+    }
+  ]
+}

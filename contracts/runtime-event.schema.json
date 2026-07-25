@@ -1,0 +1,1021 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kaleidoroom.local/contracts/runtime-event.schema.json",
+  "title": "KaleidoRoom Runtime Contract",
+  "oneOf": [
+    { "$ref": "#/$defs/WorldFixture" },
+    { "$ref": "#/$defs/DemoSessionFixture" },
+    { "$ref": "#/$defs/WorldSessionView" },
+    { "$ref": "#/$defs/OwnerSessionView" },
+    { "$ref": "#/$defs/ProofSessionView" },
+    { "$ref": "#/$defs/PassportView" }
+  ],
+  "$defs": {
+    "Checksum": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "OcId": {
+      "type": "string",
+      "enum": ["oc-user", "oc-angel", "oc-devil"]
+    },
+    "RuntimeEventType": {
+      "type": "string",
+      "enum": [
+        "session.snapshot",
+        "tick.started",
+        "proposal.character.created",
+        "proposal.dm.created",
+        "proposal.utterance.created",
+        "rule.decision.created",
+        "canonical.event.committed",
+        "observation.created",
+        "belief.updated",
+        "utterance.created",
+        "privateOs.created",
+        "tick.completed",
+        "session.completed",
+        "runtime.error"
+      ]
+    },
+    "Visibility": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": { "scope": { "const": "public" } },
+          "required": ["scope"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "scope": { "const": "owner" },
+            "ocId": { "$ref": "#/$defs/OcId" }
+          },
+          "required": ["scope", "ocId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "scope": { "const": "actor" },
+            "ocId": { "$ref": "#/$defs/OcId" }
+          },
+          "required": ["scope", "ocId"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": { "scope": { "const": "tech" } },
+          "required": ["scope"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Relationship": {
+      "type": "object",
+      "properties": {
+        "trust": { "type": "integer", "minimum": -3, "maximum": 3 },
+        "affinity": { "type": "integer", "minimum": -3, "maximum": 3 },
+        "tension": { "type": "integer", "minimum": -3, "maximum": 3 }
+      },
+      "required": ["trust", "affinity", "tension"],
+      "additionalProperties": false
+    },
+    "Character": {
+      "type": "object",
+      "properties": {
+        "ocId": { "$ref": "#/$defs/OcId" },
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "persona": { "type": "string", "minLength": 1 },
+        "publicStyle": { "type": "string", "minLength": 1 },
+        "locationId": { "type": "string", "minLength": 1 },
+        "goals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "goalId": { "type": "string" },
+              "text": { "type": "string" }
+            },
+            "required": ["goalId", "text"],
+            "additionalProperties": false
+          }
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "secretId": { "type": "string" },
+              "text": { "type": "string" }
+            },
+            "required": ["secretId", "text"],
+            "additionalProperties": false
+          }
+        },
+        "senses": {
+          "type": "array",
+          "items": { "enum": ["sight", "hearing", "system"] },
+          "uniqueItems": true
+        },
+        "relationships": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/OcId" },
+          "additionalProperties": { "$ref": "#/$defs/Relationship" }
+        }
+      },
+      "required": [
+        "ocId",
+        "name",
+        "role",
+        "persona",
+        "publicStyle",
+        "locationId",
+        "goals",
+        "secrets",
+        "senses",
+        "relationships"
+      ],
+      "additionalProperties": false
+    },
+    "ExecutableRule": {
+      "type": "object",
+      "properties": {
+        "ruleId": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": [
+            "CONSENTED_TRANSFER_ONLY",
+            "KEY_UNLOCKS_THRESHOLD",
+            "COUNTDOWN",
+            "SOCIAL_CONSEQUENCE"
+          ]
+        },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "params": { "type": "object" }
+      },
+      "required": [
+        "ruleId",
+        "kind",
+        "label",
+        "description",
+        "enabled",
+        "params"
+      ],
+      "additionalProperties": false
+    },
+    "WorldState": {
+      "type": "object",
+      "properties": {
+        "worldId": { "const": "infinite-apartment" },
+        "worldVersion": { "type": "integer", "minimum": 0 },
+        "tickIndex": { "type": "integer", "minimum": 0 },
+        "status": { "enum": ["ready", "running", "completed", "failed"] },
+        "objects": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "objectId": { "type": "string" },
+              "name": { "type": "string" },
+              "locationId": { "type": "string" },
+              "holderId": {
+                "oneOf": [
+                  { "$ref": "#/$defs/OcId" },
+                  { "type": "null" }
+                ]
+              },
+              "tags": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "required": ["objectId", "name", "locationId", "holderId", "tags"],
+            "additionalProperties": false
+          }
+        },
+        "thresholdUnlocked": { "type": "boolean" },
+        "countdown": { "type": ["integer", "null"], "minimum": 0 },
+        "relationships": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/OcId" },
+          "additionalProperties": {
+            "type": "object",
+            "propertyNames": { "$ref": "#/$defs/OcId" },
+            "additionalProperties": { "$ref": "#/$defs/Relationship" }
+          }
+        }
+      },
+      "required": [
+        "worldId",
+        "worldVersion",
+        "tickIndex",
+        "status",
+        "objects",
+        "thresholdUnlocked",
+        "countdown",
+        "relationships"
+      ],
+      "additionalProperties": false
+    },
+    "WorldFixture": {
+      "type": "object",
+      "properties": {
+        "fixtureType": { "const": "world" },
+        "worldId": { "const": "infinite-apartment" },
+        "worldVersion": { "type": "integer", "minimum": 0 },
+        "name": { "const": "无限公寓" },
+        "aesthetic": { "type": "string" },
+        "description": { "type": "string" },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ExecutableRule" }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "locationId": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "occludesSightFor": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "required": [
+              "locationId",
+              "name",
+              "description",
+              "occludesSightFor"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "characters": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/Character" }
+        },
+        "initialState": { "$ref": "#/$defs/WorldState" },
+        "eventSeed": { "type": "string" },
+        "scenarioCatalog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "templateId": { "type": "string" },
+              "kind": { "enum": ["PRESSURE", "REVEAL_CUE", "ADVANCE_CLOCK"] },
+              "description": { "type": "string" },
+              "allowedParams": { "type": "object" }
+            },
+            "required": ["templateId", "kind", "description", "allowedParams"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "fixtureType",
+        "worldId",
+        "worldVersion",
+        "name",
+        "aesthetic",
+        "description",
+        "rules",
+        "locations",
+        "characters",
+        "initialState",
+        "eventSeed",
+        "scenarioCatalog"
+      ],
+      "additionalProperties": false
+    },
+    "TakeAction": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "TAKE" },
+        "objectId": { "type": "string", "minLength": 1 }
+      },
+      "required": ["kind", "objectId"],
+      "additionalProperties": false
+    },
+    "GiveAction": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "GIVE" },
+        "objectId": { "type": "string", "minLength": 1 },
+        "recipientId": { "$ref": "#/$defs/OcId" }
+      },
+      "required": ["kind", "objectId", "recipientId"],
+      "additionalProperties": false
+    },
+    "AccuseAction": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "ACCUSE" },
+        "targetId": { "$ref": "#/$defs/OcId" },
+        "claim": { "type": "string" }
+      },
+      "required": ["kind", "targetId", "claim"],
+      "additionalProperties": false
+    },
+    "CharacterAction": {
+      "oneOf": [
+        { "$ref": "#/$defs/TakeAction" },
+        { "$ref": "#/$defs/GiveAction" },
+        { "$ref": "#/$defs/AccuseAction" }
+      ]
+    },
+    "CharacterProposal": {
+      "type": "object",
+      "properties": {
+        "proposalId": { "type": "string" },
+        "actorId": { "$ref": "#/$defs/OcId" },
+        "action": { "$ref": "#/$defs/CharacterAction" },
+        "motivationRefs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "proposedPublicLine": { "type": "string" }
+      },
+      "required": ["proposalId", "actorId", "action", "motivationRefs"],
+      "additionalProperties": false
+    },
+    "DmProposal": {
+      "type": "object",
+      "properties": {
+        "proposalId": { "type": "string" },
+        "templateId": { "type": "string" },
+        "kind": { "enum": ["PRESSURE", "REVEAL_CUE", "ADVANCE_CLOCK"] },
+        "params": { "type": "object" }
+      },
+      "required": ["proposalId", "templateId", "kind", "params"],
+      "additionalProperties": false
+    },
+    "UtteranceProposal": {
+      "type": "object",
+      "properties": {
+        "proposalId": { "type": "string" },
+        "actorId": { "$ref": "#/$defs/OcId" },
+        "text": { "type": "string", "minLength": 1 },
+        "audience": { "enum": ["world", "owner", "publicUi"] },
+        "basedOnBeliefIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "proposalId",
+        "actorId",
+        "text",
+        "audience",
+        "basedOnBeliefIds"
+      ],
+      "additionalProperties": false
+    },
+    "RuleDecision": {
+      "type": "object",
+      "properties": {
+        "decisionId": { "type": "string" },
+        "proposalId": { "type": "string" },
+        "verdict": { "enum": ["reject_invalid", "resolved"] },
+        "outcome": { "enum": ["success", "blocked", "with_cost"] },
+        "matchedRuleIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "reasonCodes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "decisionId",
+        "proposalId",
+        "verdict",
+        "matchedRuleIds",
+        "reasonCodes"
+      ],
+      "additionalProperties": false
+    },
+    "StateEffect": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "set" },
+            "path": { "type": "string" },
+            "before": {},
+            "after": {}
+          },
+          "required": ["op", "path", "before", "after"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": { "const": "inc" },
+            "path": { "type": "string" },
+            "before": { "type": "number" },
+            "by": { "type": "number" },
+            "after": { "type": "number" }
+          },
+          "required": ["op", "path", "before", "by", "after"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "PerceptualAtom": {
+      "type": "object",
+      "properties": {
+        "atomId": { "type": "string" },
+        "code": { "type": "string" },
+        "modality": { "enum": ["sight", "hearing", "system"] },
+        "locationId": { "type": "string" },
+        "lineOfSightRequired": { "type": "boolean" },
+        "data": { "type": "object" }
+      },
+      "required": [
+        "atomId",
+        "code",
+        "modality",
+        "lineOfSightRequired",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "CanonicalEvent": {
+      "type": "object",
+      "properties": {
+        "canonicalEventId": { "type": "string" },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "kind": {
+          "enum": [
+            "dm.intervention.applied",
+            "action.resolved",
+            "utterance.spoken",
+            "session.completed"
+          ]
+        },
+        "actorId": { "$ref": "#/$defs/OcId" },
+        "decisionId": { "type": "string" },
+        "factCodes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "effects": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StateEffect" }
+        },
+        "perceptualAtoms": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/PerceptualAtom" }
+        }
+      },
+      "required": [
+        "canonicalEventId",
+        "sequence",
+        "kind",
+        "decisionId",
+        "factCodes",
+        "effects",
+        "perceptualAtoms"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "observationId": { "type": "string" },
+        "canonicalEventId": { "type": "string" },
+        "ocId": { "$ref": "#/$defs/OcId" },
+        "channels": {
+          "type": "array",
+          "items": { "enum": ["sight", "hearing", "system"] },
+          "uniqueItems": true
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "atomId": { "type": "string" },
+              "code": { "type": "string" },
+              "data": { "type": "object" }
+            },
+            "required": ["atomId", "code", "data"],
+            "additionalProperties": false
+          }
+        },
+        "completeness": { "enum": ["full", "partial"] },
+        "source": { "enum": ["direct", "reported"] }
+      },
+      "required": [
+        "observationId",
+        "canonicalEventId",
+        "ocId",
+        "channels",
+        "facts",
+        "completeness",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "Belief": {
+      "type": "object",
+      "properties": {
+        "beliefId": { "type": "string" },
+        "ocId": { "$ref": "#/$defs/OcId" },
+        "predicate": { "type": "string" },
+        "object": {},
+        "stance": { "enum": ["suspected", "believed", "disbelieved"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sourceObservationIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "beliefId",
+        "ocId",
+        "predicate",
+        "object",
+        "stance",
+        "confidence",
+        "sourceObservationIds"
+      ],
+      "additionalProperties": false
+    },
+    "Utterance": {
+      "type": "object",
+      "properties": {
+        "utteranceId": { "type": "string" },
+        "ocId": { "$ref": "#/$defs/OcId" },
+        "canonicalEventId": { "type": "string" },
+        "audience": { "enum": ["world", "owner", "publicUi"] },
+        "text": { "type": "string" },
+        "basedOnBeliefIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "truthPosture": {
+          "enum": ["candid", "uncertain", "withholding", "misrepresenting"]
+        }
+      },
+      "required": [
+        "utteranceId",
+        "ocId",
+        "canonicalEventId",
+        "audience",
+        "text",
+        "basedOnBeliefIds",
+        "truthPosture"
+      ],
+      "additionalProperties": false
+    },
+    "PrivateOs": {
+      "type": "object",
+      "properties": {
+        "privateOsId": { "type": "string" },
+        "ocId": { "$ref": "#/$defs/OcId" },
+        "canonicalEventId": { "type": "string" },
+        "text": { "type": "string" },
+        "basedOnBeliefIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "delivery": { "const": "ownerPrivate" }
+      },
+      "required": [
+        "privateOsId",
+        "ocId",
+        "canonicalEventId",
+        "text",
+        "basedOnBeliefIds",
+        "delivery"
+      ],
+      "additionalProperties": false
+    },
+    "SessionSnapshot": {
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "worldVersion": { "type": "integer", "minimum": 0 },
+        "tickIndex": { "type": "integer", "minimum": 0 },
+        "lastCanonicalSequence": { "type": "integer", "minimum": 0 },
+        "checksum": { "$ref": "#/$defs/Checksum" },
+        "state": { "$ref": "#/$defs/WorldState" }
+      },
+      "required": [
+        "sessionId",
+        "worldVersion",
+        "tickIndex",
+        "lastCanonicalSequence",
+        "checksum",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "EventEnvelopeBase": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "eventId": { "type": "string" },
+        "cursor": { "type": "integer", "minimum": 1 },
+        "sessionId": { "type": "string" },
+        "tickIndex": { "type": "integer", "minimum": 0 },
+        "emittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "type": { "$ref": "#/$defs/RuntimeEventType" },
+        "visibility": { "$ref": "#/$defs/Visibility" },
+        "causationId": { "type": "string" },
+        "payload": { "type": "object" }
+      },
+      "required": [
+        "schemaVersion",
+        "eventId",
+        "cursor",
+        "sessionId",
+        "tickIndex",
+        "emittedAt",
+        "type",
+        "visibility",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimeEventEnvelope": {
+      "allOf": [
+        { "$ref": "#/$defs/EventEnvelopeBase" },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "type": { "const": "session.snapshot" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "snapshot": { "$ref": "#/$defs/SessionSnapshot" }
+                  },
+                  "required": ["snapshot"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "tick.started" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "actorId": { "$ref": "#/$defs/OcId" },
+                    "worldVersion": { "type": "integer" }
+                  },
+                  "required": ["actorId", "worldVersion"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "proposal.character.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "proposal": { "$ref": "#/$defs/CharacterProposal" }
+                  },
+                  "required": ["proposal"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "proposal.dm.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "proposal": { "$ref": "#/$defs/DmProposal" }
+                  },
+                  "required": ["proposal"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "proposal.utterance.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "proposal": { "$ref": "#/$defs/UtteranceProposal" }
+                  },
+                  "required": ["proposal"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "rule.decision.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "decision": { "$ref": "#/$defs/RuleDecision" }
+                  },
+                  "required": ["decision"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "canonical.event.committed" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "event": { "$ref": "#/$defs/CanonicalEvent" },
+                    "worldVersion": { "type": "integer" }
+                  },
+                  "required": ["event", "worldVersion"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "observation.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "observation": { "$ref": "#/$defs/Observation" }
+                  },
+                  "required": ["observation"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "belief.updated" },
+                "payload": {
+                  "type": "object",
+                  "properties": { "belief": { "$ref": "#/$defs/Belief" } },
+                  "required": ["belief"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "utterance.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "utterance": { "$ref": "#/$defs/Utterance" }
+                  },
+                  "required": ["utterance"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "privateOs.created" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "privateOs": { "$ref": "#/$defs/PrivateOs" }
+                  },
+                  "required": ["privateOs"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": {
+                  "enum": ["tick.completed", "session.completed"]
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "worldVersion": { "type": "integer" },
+                    "lastCanonicalSequence": { "type": "integer" },
+                    "checksum": { "$ref": "#/$defs/Checksum" }
+                  },
+                  "required": [
+                    "worldVersion",
+                    "lastCanonicalSequence",
+                    "checksum"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "type": { "const": "runtime.error" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "code": { "type": "string" },
+                    "message": { "type": "string" },
+                    "recoverable": { "type": "boolean" }
+                  },
+                  "required": ["code", "message", "recoverable"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "WorldInfoView": {
+      "type": "object",
+      "properties": {
+        "worldId": { "const": "infinite-apartment" },
+        "name": { "const": "无限公寓" },
+        "aesthetic": { "type": "string" },
+        "description": { "type": "string" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ExecutableRule" }
+        }
+      },
+      "required": [
+        "worldId",
+        "name",
+        "aesthetic",
+        "description",
+        "rules"
+      ],
+      "additionalProperties": false
+    },
+    "OwnerOcView": {
+      "type": "object",
+      "properties": {
+        "ocId": { "const": "oc-user" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "persona": { "type": "string" },
+        "publicStyle": { "type": "string" }
+      },
+      "required": ["ocId", "name", "role", "persona", "publicStyle"],
+      "additionalProperties": false
+    },
+    "WorldSessionView": {
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "worldId": { "const": "infinite-apartment" },
+        "status": { "enum": ["running", "completed", "failed"] },
+        "consentRequired": { "type": "boolean" },
+        "lastCursor": { "type": "integer", "minimum": 0 },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RuntimeEventEnvelope" }
+        },
+        "world": { "$ref": "#/$defs/WorldInfoView" }
+      },
+      "required": [
+        "sessionId",
+        "worldId",
+        "status",
+        "consentRequired",
+        "lastCursor",
+        "events",
+        "world"
+      ],
+      "additionalProperties": false
+    },
+    "OwnerSessionView": {
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "worldId": { "const": "infinite-apartment" },
+        "status": { "enum": ["running", "completed", "failed"] },
+        "consentRequired": { "type": "boolean" },
+        "lastCursor": { "type": "integer", "minimum": 0 },
+        "checksum": { "$ref": "#/$defs/Checksum" },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RuntimeEventEnvelope" }
+        },
+        "oc": { "$ref": "#/$defs/OwnerOcView" }
+      },
+      "required": [
+        "sessionId",
+        "worldId",
+        "status",
+        "consentRequired",
+        "lastCursor",
+        "checksum",
+        "events",
+        "oc"
+      ],
+      "additionalProperties": false
+    },
+    "ProofSessionView": {
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "worldId": { "const": "infinite-apartment" },
+        "status": { "enum": ["running", "completed", "failed"] },
+        "consentRequired": { "type": "boolean" },
+        "lastCursor": { "type": "integer", "minimum": 0 },
+        "checksum": { "$ref": "#/$defs/Checksum" },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RuntimeEventEnvelope" }
+        },
+        "objectiveState": { "$ref": "#/$defs/WorldState" }
+      },
+      "required": [
+        "sessionId",
+        "worldId",
+        "status",
+        "consentRequired",
+        "lastCursor",
+        "checksum",
+        "events",
+        "objectiveState"
+      ],
+      "additionalProperties": false
+    },
+    "PassportView": {
+      "type": "object",
+      "properties": {
+        "ocId": { "const": "oc-user" },
+        "worldId": { "const": "infinite-apartment" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "publicStyle": { "type": "string" },
+        "publicExperience": { "type": "string" }
+      },
+      "required": [
+        "ocId",
+        "worldId",
+        "name",
+        "role",
+        "publicStyle",
+        "publicExperience"
+      ],
+      "additionalProperties": false
+    },
+    "ErrorDto": {
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "retryable": { "type": "boolean" }
+      },
+      "required": ["code", "message", "retryable"],
+      "additionalProperties": false
+    },
+    "DemoSessionFixture": {
+      "type": "object",
+      "properties": {
+        "fixtureType": { "const": "demoSession" },
+        "sessionId": { "type": "string" },
+        "worldId": { "const": "infinite-apartment" },
+        "seed": { "type": "string" },
+        "consentRequired": { "type": "boolean" },
+        "participantIds": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "oc-user" },
+            { "const": "oc-angel" },
+            { "const": "oc-devil" }
+          ],
+          "items": false
+        },
+        "events": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "$ref": "#/$defs/RuntimeEventEnvelope" }
+        }
+      },
+      "required": [
+        "fixtureType",
+        "sessionId",
+        "worldId",
+        "seed",
+        "consentRequired",
+        "participantIds",
+        "events"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

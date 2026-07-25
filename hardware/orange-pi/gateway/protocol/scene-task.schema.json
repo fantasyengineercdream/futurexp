@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oc.local/protocol/scene-task.schema.json",
+  "title": "OC display scene task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "task_id",
+    "type",
+    "priority",
+    "ttl_ms",
+    "interrupt",
+    "duration_ms",
+    "created_at",
+    "scene"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "task_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "type": { "const": "scene.render" },
+    "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "ttl_ms": { "type": "integer", "minimum": 1 },
+    "interrupt": { "enum": ["replace", "queue", "ignore"] },
+    "duration_ms": { "type": "integer", "minimum": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "scene": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": { "text": { "$ref": "#/$defs/text" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["animation"],
+          "properties": { "animation": { "$ref": "#/$defs/animation" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["image"],
+          "properties": { "image": { "$ref": "#/$defs/image" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text", "animation"],
+          "properties": {
+            "text": { "$ref": "#/$defs/text" },
+            "animation": { "$ref": "#/$defs/animation" }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["content", "style"],
+      "properties": {
+        "content": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "style": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
+    },
+    "animation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "asset_version", "loop"],
+      "properties": {
+        "asset_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "asset_version": { "type": "integer", "minimum": 1 },
+        "loop": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset_id", "asset_version"],
+      "properties": {
+        "asset_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "asset_version": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

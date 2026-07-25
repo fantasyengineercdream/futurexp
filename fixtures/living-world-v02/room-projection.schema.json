@@ -1,0 +1,261 @@
+{
+  "$defs": {
+    "LatestDiaryProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        },
+        "entryId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entryid"
+        },
+        "createdAt": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Createdat"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        }
+      },
+      "required": [
+        "available"
+      ],
+      "title": "LatestDiaryProjection",
+      "type": "object"
+    },
+    "RelationshipSummaryProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "residentId": {
+          "title": "Residentid",
+          "type": "string"
+        },
+        "displayName": {
+          "title": "Displayname",
+          "type": "string"
+        },
+        "stateLabel": {
+          "title": "Statelabel",
+          "type": "string"
+        },
+        "changedRecently": {
+          "title": "Changedrecently",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "residentId",
+        "displayName",
+        "stateLabel",
+        "changedRecently"
+      ],
+      "title": "RelationshipSummaryProjection",
+      "type": "object"
+    },
+    "RoomCapabilitiesProjection": {
+      "additionalProperties": false,
+      "properties": {
+        "realtimeConversation": {
+          "title": "Realtimeconversation",
+          "type": "boolean"
+        },
+        "diary": {
+          "title": "Diary",
+          "type": "boolean"
+        },
+        "rest": {
+          "title": "Rest",
+          "type": "boolean"
+        },
+        "privateOs": {
+          "title": "Privateos",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "realtimeConversation",
+        "diary",
+        "rest",
+        "privateOs"
+      ],
+      "title": "RoomCapabilitiesProjection",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2",
+      "default": "0.2",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "worldVersion": {
+      "title": "Worldversion",
+      "type": "integer"
+    },
+    "residentId": {
+      "title": "Residentid",
+      "type": "string"
+    },
+    "actorId": {
+      "title": "Actorid",
+      "type": "string"
+    },
+    "roomId": {
+      "title": "Roomid",
+      "type": "string"
+    },
+    "isHome": {
+      "title": "Ishome",
+      "type": "boolean"
+    },
+    "presence": {
+      "enum": [
+        "home",
+        "public",
+        "adventure",
+        "resting",
+        "away"
+      ],
+      "title": "Presence",
+      "type": "string"
+    },
+    "currentLocationId": {
+      "title": "Currentlocationid",
+      "type": "string"
+    },
+    "publicMood": {
+      "title": "Publicmood",
+      "type": "string"
+    },
+    "publicActivitySummary": {
+      "title": "Publicactivitysummary",
+      "type": "string"
+    },
+    "publicExpression": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Publicexpression"
+    },
+    "latestDiary": {
+      "$ref": "#/$defs/LatestDiaryProjection"
+    },
+    "relationshipSummaries": {
+      "items": {
+        "$ref": "#/$defs/RelationshipSummaryProjection"
+      },
+      "title": "Relationshipsummaries",
+      "type": "array"
+    },
+    "capabilities": {
+      "$ref": "#/$defs/RoomCapabilitiesProjection"
+    },
+    "privateOsAvailable": {
+      "title": "Privateosavailable",
+      "type": "boolean"
+    },
+    "privateOsRef": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Privateosref"
+    },
+    "recentExperienceRefs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Recentexperiencerefs",
+      "type": "array"
+    },
+    "decisionBasisSummary": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decisionbasissummary"
+    },
+    "decisionMemoryRefs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Decisionmemoryrefs",
+      "type": "array"
+    },
+    "updatedAt": {
+      "format": "date-time",
+      "title": "Updatedat",
+      "type": "string"
+    }
+  },
+  "required": [
+    "runId",
+    "worldVersion",
+    "residentId",
+    "actorId",
+    "roomId",
+    "isHome",
+    "presence",
+    "currentLocationId",
+    "publicMood",
+    "publicActivitySummary",
+    "latestDiary",
+    "relationshipSummaries",
+    "capabilities",
+    "privateOsAvailable",
+    "recentExperienceRefs",
+    "updatedAt"
+  ],
+  "title": "RoomProjectionDTO",
+  "type": "object"
+}

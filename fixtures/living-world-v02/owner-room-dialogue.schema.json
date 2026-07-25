@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "residentId": {
+      "title": "Residentid",
+      "type": "string"
+    },
+    "actorId": {
+      "title": "Actorid",
+      "type": "string"
+    },
+    "publicReply": {
+      "title": "Publicreply",
+      "type": "string"
+    },
+    "memoryRefsUsed": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Memoryrefsused",
+      "type": "array"
+    },
+    "privateOsAvailable": {
+      "title": "Privateosavailable",
+      "type": "boolean"
+    },
+    "privateOsRef": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Privateosref"
+    }
+  },
+  "required": [
+    "runId",
+    "residentId",
+    "actorId",
+    "publicReply",
+    "memoryRefsUsed",
+    "privateOsAvailable"
+  ],
+  "title": "OwnerRoomDialogueDTO",
+  "type": "object"
+}

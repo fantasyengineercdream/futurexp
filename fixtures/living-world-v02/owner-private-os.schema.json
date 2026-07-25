@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "runId": {
+      "title": "Runid",
+      "type": "string"
+    },
+    "worldVersion": {
+      "title": "Worldversion",
+      "type": "integer"
+    },
+    "residentId": {
+      "title": "Residentid",
+      "type": "string"
+    },
+    "actorId": {
+      "title": "Actorid",
+      "type": "string"
+    },
+    "privateOsRef": {
+      "title": "Privateosref",
+      "type": "string"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    },
+    "memoryRefsUsed": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Memoryrefsused",
+      "type": "array"
+    }
+  },
+  "required": [
+    "runId",
+    "worldVersion",
+    "residentId",
+    "actorId",
+    "privateOsRef",
+    "text",
+    "memoryRefsUsed"
+  ],
+  "title": "OwnerPrivateOsDTO",
+  "type": "object"
+}

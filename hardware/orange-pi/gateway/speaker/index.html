@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OC Speaker Sink</title>
+    <style>
+      :root { color-scheme: dark; font-family: ui-monospace, monospace; }
+      body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #171613; color: #eee8d8; }
+      main { width: min(34rem, 82vw); padding: 2.5rem; border: 1px solid #777064; box-shadow: 10px 10px 0 #090908; }
+      button { padding: .8rem 1.2rem; border: 1px solid currentColor; background: #eee8d8; color: #171613; font: inherit; cursor: pointer; }
+      #status { color: #b9ae96; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>OC Speaker Sink</h1>
+      <p>Orange Pi 暂无扬声器时，用这台电脑实时播放角色 PCM16 音频。</p>
+      <button id="connect">连接并允许播放</button>
+      <p id="status">尚未连接</p>
+    </main>
+    <script type="module" src="/speaker/speaker.js"></script>
+  </body>
+</html>

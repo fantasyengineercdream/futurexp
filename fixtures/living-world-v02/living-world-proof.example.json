@@ -1,0 +1,370 @@
+{
+  "schemaVersion": "0.2",
+  "runId": "fixture-transactional-v02",
+  "sessionId": "fixture-transactional-v02",
+  "seed": "kaleidoroom-transactional-v02-proof",
+  "snapshot": {
+    "worldVersion": 0,
+    "worldHash": "b3d741dc642e90e135361dc2f27633a7422561e1046d09ce50e9a6e874b21983",
+    "tickIndex": 0
+  },
+  "actors": [
+    {
+      "actorId": "oc-angel",
+      "residentId": "resident-oo",
+      "displayName": "天使 OC",
+      "screenId": "screen-oo"
+    },
+    {
+      "actorId": "oc-devil",
+      "residentId": "resident-cc",
+      "displayName": "恶魔 OC",
+      "screenId": "screen-cc"
+    },
+    {
+      "actorId": "oc-user",
+      "residentId": "resident-demo-user",
+      "displayName": "用户 OC",
+      "screenId": "screen-demo-user"
+    }
+  ],
+  "residentPresence": [
+    {
+      "actorId": "oc-angel",
+      "residentId": "resident-oo",
+      "displayName": "天使 OC",
+      "floorId": "floor-safe",
+      "roomId": "room-oo",
+      "locationId": "mirror-curtain",
+      "presence": "away",
+      "activityLabel": "speak publicly"
+    },
+    {
+      "actorId": "oc-devil",
+      "residentId": "resident-cc",
+      "displayName": "恶魔 OC",
+      "floorId": "floor-safe",
+      "roomId": "room-cc",
+      "locationId": "mirror-curtain",
+      "presence": "home",
+      "activityLabel": "attempt to take 公共空间通行牌"
+    },
+    {
+      "actorId": "oc-user",
+      "residentId": "resident-demo-user",
+      "displayName": "用户 OC",
+      "floorId": "floor-safe",
+      "roomId": "room-demo-user",
+      "locationId": "mirror-curtain",
+      "presence": "home",
+      "activityLabel": "move to 临时冒险房间"
+    }
+  ],
+  "proposals": [
+    {
+      "proposalId": "fixture-transactional-v02:round-0:oc-angel:proposal",
+      "actorId": "oc-angel",
+      "intentLabel": "speak publicly",
+      "intentKind": "UTTERANCE",
+      "basedOnWorldVersion": 0,
+      "targetLabel": null,
+      "targetId": null,
+      "resourceId": "expression:oc-angel",
+      "preconditionLabels": [
+        "Affordance exists in the shared snapshot",
+        "Actor is present at mirror-curtain",
+        "World version equals 0"
+      ],
+      "influencedByMemoryIds": [],
+      "influencedByRelationshipIds": []
+    },
+    {
+      "proposalId": "fixture-transactional-v02:round-0:oc-devil:proposal",
+      "actorId": "oc-devil",
+      "intentLabel": "attempt to take 公共空间通行牌",
+      "intentKind": "TAKE",
+      "basedOnWorldVersion": 0,
+      "targetLabel": "公共空间通行牌",
+      "targetId": "shared-badge",
+      "resourceId": "object:shared-badge",
+      "preconditionLabels": [
+        "Affordance exists in the shared snapshot",
+        "Actor is present at mirror-curtain",
+        "World version equals 0"
+      ],
+      "influencedByMemoryIds": [],
+      "influencedByRelationshipIds": []
+    },
+    {
+      "proposalId": "fixture-transactional-v02:round-0:oc-user:proposal",
+      "actorId": "oc-user",
+      "intentLabel": "move to 临时冒险房间",
+      "intentKind": "MOVE",
+      "basedOnWorldVersion": 0,
+      "targetLabel": "临时冒险房间",
+      "targetId": "adventure-instance-01",
+      "resourceId": "actor-location:oc-user",
+      "preconditionLabels": [
+        "Affordance exists in the shared snapshot",
+        "Actor is present at mirror-curtain",
+        "World version equals 0"
+      ],
+      "influencedByMemoryIds": [],
+      "influencedByRelationshipIds": []
+    }
+  ],
+  "conflictSets": [
+    {
+      "conflictSetId": "conflict-social-pressure:bcc5d40ad415291d",
+      "kind": "social-pressure",
+      "proposalIds": [
+        "fixture-transactional-v02:round-0:oc-angel:proposal",
+        "fixture-transactional-v02:round-0:oc-devil:proposal"
+      ],
+      "resourceId": "object:shared-badge",
+      "reasonLabel": "A rule-backed social pressure directly opposes another actor's simultaneous intent."
+    }
+  ],
+  "resolutionBatch": {
+    "batchId": "fixture-transactional-v02:round-0:resolution-batch",
+    "conflictSetIds": [
+      "conflict-social-pressure:bcc5d40ad415291d"
+    ],
+    "atomic": true,
+    "seed": "kaleidoroom-transactional-v02-proof",
+    "receipts": [
+      {
+        "proposalId": "fixture-transactional-v02:round-0:oc-angel:proposal",
+        "status": "applied",
+        "outcome": "success",
+        "ruleId": "rule-social-consequence",
+        "ruleLabel": "说出口的指控会留下关系后果",
+        "reasonCodes": [
+          "UTTERANCE_ALLOWED",
+          "CLAIM_NOT_PROMOTED_TO_FACT"
+        ],
+        "deterministicEvidence": "4f52954de1b5dc14f29d04be50925bc9c225ae0a21ba532254abfeeebe3b26bd",
+        "evidenceLabel": "Rule Kernel receipt binds proposal, snapshot, matched rules, verdict and effects.",
+        "effects": [
+          {
+            "op": "inc",
+            "path": "/relationships/oc-angel/oc-devil/tension",
+            "before": 0,
+            "after": 1,
+            "by": 1
+          }
+        ]
+      },
+      {
+        "proposalId": "fixture-transactional-v02:round-0:oc-devil:proposal",
+        "status": "applied",
+        "outcome": "blocked",
+        "ruleId": "rule-consented-transfer",
+        "ruleLabel": "自愿交付",
+        "reasonCodes": [
+          "CONSENT_REQUIRED"
+        ],
+        "deterministicEvidence": "97d46ee3acdd3e3924f1fd52bd04327917e424b3792c6d3d76139f87a6cb3da5",
+        "evidenceLabel": "Rule Kernel receipt binds proposal, snapshot, matched rules, verdict and effects.",
+        "effects": []
+      },
+      {
+        "proposalId": "fixture-transactional-v02:round-0:oc-user:proposal",
+        "status": "applied",
+        "outcome": "success",
+        "ruleId": "rule-location-transition",
+        "ruleLabel": "安全层与冒险层转换",
+        "reasonCodes": [
+          "VOLUNTARY_LOCATION_TRANSITION",
+          "SAFE_TO_ADVENTURE"
+        ],
+        "deterministicEvidence": "8ffe952a0f7935ecc632c41e27c7c3cb350aa1d89cc6a01ee171dcf991c6ecf4",
+        "evidenceLabel": "Rule Kernel receipt binds proposal, snapshot, matched rules, verdict and effects.",
+        "effects": [
+          {
+            "op": "set",
+            "path": "/actorLocations/oc-user",
+            "before": "mirror-curtain",
+            "after": "adventure-instance-01"
+          }
+        ]
+      }
+    ]
+  },
+  "commit": {
+    "commitId": "fixture-transactional-v02:round-0:commit",
+    "canonicalEventId": "fixture-transactional-v02:round-0:canonical-batch",
+    "fromVersion": 0,
+    "toVersion": 1,
+    "beforeHash": "b3d741dc642e90e135361dc2f27633a7422561e1046d09ce50e9a6e874b21983",
+    "afterHash": "43b139badedd68886c9bddb84145c28bfaebd93dc048317b732e0d6014d8c9c9",
+    "committedAt": "2026-07-24T00:00:01Z",
+    "tickIndex": 0,
+    "atomic": true,
+    "rolledBack": false,
+    "failureReason": null
+  },
+  "perspectives": [
+    {
+      "actorId": "oc-angel",
+      "canonicalEventId": "fixture-transactional-v02:round-0:canonical-batch",
+      "knowledgeState": "misunderstood",
+      "observedFactIds": [
+        "fixture-transactional-v02:round-0:oc-angel:proposal:provisional-heard",
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-heard"
+      ],
+      "unknownFactIds": [
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-seen",
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-arrival",
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-departure"
+      ],
+      "perspectiveLabel": "Partial evidence, revisable interpretation",
+      "beliefSummary": "The actor inferred more than the partial evidence proves.",
+      "memorySummary": "3 memory changes were derived only from this actor's observation.",
+      "publicExpression": "I only caught fragments; I suspect something went wrong.",
+      "privateOsAvailable": true,
+      "privateOsRef": "private-os:fixture-transactional-v02:round-0:canonical-batch:oc-angel",
+      "privateInnerOs": null
+    },
+    {
+      "actorId": "oc-devil",
+      "canonicalEventId": "fixture-transactional-v02:round-0:canonical-batch",
+      "knowledgeState": "observed",
+      "observedFactIds": [
+        "fixture-transactional-v02:round-0:oc-angel:proposal:provisional-heard",
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-heard",
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-seen",
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-departure"
+      ],
+      "unknownFactIds": [
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-arrival"
+      ],
+      "perspectiveLabel": "Direct witness",
+      "beliefSummary": "The actor has direct perceptual evidence for the key fact.",
+      "memorySummary": "4 memory changes were derived only from this actor's observation.",
+      "publicExpression": "I saw enough to describe what the rules allowed.",
+      "privateOsAvailable": true,
+      "privateOsRef": "private-os:fixture-transactional-v02:round-0:canonical-batch:oc-devil",
+      "privateInnerOs": null
+    },
+    {
+      "actorId": "oc-user",
+      "canonicalEventId": "fixture-transactional-v02:round-0:canonical-batch",
+      "knowledgeState": "unknown",
+      "observedFactIds": [
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-arrival"
+      ],
+      "unknownFactIds": [
+        "fixture-transactional-v02:round-0:oc-angel:proposal:provisional-heard",
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-heard",
+        "fixture-transactional-v02:round-0:oc-devil:proposal:provisional-seen",
+        "fixture-transactional-v02:round-0:oc-user:proposal:provisional-departure"
+      ],
+      "perspectiveLabel": "Key fact remains unknown",
+      "beliefSummary": "The actor lacks direct evidence for the key fact.",
+      "memorySummary": "1 memory changes were derived only from this actor's observation.",
+      "publicExpression": "I did not witness the crucial part, so I cannot claim it.",
+      "privateOsAvailable": true,
+      "privateOsRef": "private-os:fixture-transactional-v02:round-0:canonical-batch:oc-user",
+      "privateInnerOs": null
+    }
+  ],
+  "persistence": {
+    "memoryDeltas": [
+      {
+        "actorId": "oc-angel",
+        "memoryId": "memory:0:oc-angel:fixture-transactional-v02:round-0:oc-angel:proposal:provisional-heard",
+        "summary": "Remembered observable fact: utterance.heard",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-angel"
+        ]
+      },
+      {
+        "actorId": "oc-angel",
+        "memoryId": "memory:0:oc-angel:fixture-transactional-v02:round-0:oc-devil:proposal:provisional-heard",
+        "summary": "Remembered observable fact: object.contact.heard",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-angel"
+        ]
+      },
+      {
+        "actorId": "oc-angel",
+        "memoryId": "memory:0:oc-angel:inference",
+        "summary": "Formed a revisable inference from partial evidence.",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-angel"
+        ]
+      },
+      {
+        "actorId": "oc-devil",
+        "memoryId": "memory:0:oc-devil:fixture-transactional-v02:round-0:oc-angel:proposal:provisional-heard",
+        "summary": "Remembered observable fact: utterance.heard",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-devil"
+        ]
+      },
+      {
+        "actorId": "oc-devil",
+        "memoryId": "memory:0:oc-devil:fixture-transactional-v02:round-0:oc-devil:proposal:provisional-seen",
+        "summary": "Remembered observable fact: object.resisted.take",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-devil"
+        ]
+      },
+      {
+        "actorId": "oc-devil",
+        "memoryId": "memory:0:oc-devil:fixture-transactional-v02:round-0:oc-devil:proposal:provisional-heard",
+        "summary": "Remembered observable fact: object.contact.heard",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-devil"
+        ]
+      },
+      {
+        "actorId": "oc-devil",
+        "memoryId": "memory:0:oc-devil:fixture-transactional-v02:round-0:oc-user:proposal:provisional-departure",
+        "summary": "Remembered observable fact: location.departure.seen",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-devil"
+        ]
+      },
+      {
+        "actorId": "oc-user",
+        "memoryId": "memory:0:oc-user:fixture-transactional-v02:round-0:oc-user:proposal:provisional-arrival",
+        "summary": "Remembered observable fact: location.arrival.experienced",
+        "sourceObservationIds": [
+          "observation-fixture-transactional-v02:round-0:canonical-batch-oc-user"
+        ]
+      }
+    ],
+    "relationshipDeltas": [
+      {
+        "deltaId": "relationship-delta:0:0",
+        "fromActorId": "oc-angel",
+        "toActorId": "oc-devil",
+        "dimension": "tension",
+        "before": 0,
+        "after": 1,
+        "causeCanonicalEventId": "fixture-transactional-v02:round-0:canonical-batch"
+      }
+    ],
+    "nextRoundEvidence": {
+      "actorId": "oc-devil",
+      "previousProposalId": "fixture-transactional-v02:round-0:oc-devil:proposal",
+      "nextProposalId": "fixture-transactional-v02:round-1:oc-devil:proposal",
+      "changedBecauseMemoryIds": [
+        "memory:0:oc-devil:fixture-transactional-v02:round-0:oc-devil:proposal:provisional-seen"
+      ],
+      "changedBecauseRelationshipIds": [],
+      "summary": "The next proposal differs after this actor carried forward its own observation-derived memory and the committed relationship state."
+    }
+  },
+  "replay": {
+    "verified": true,
+    "status": "verified",
+    "seed": "kaleidoroom-transactional-v02-proof",
+    "expectedFinalHash": "4497e15ba1474c65afb2d3052e10957ce83b844e1c9fc9199d8033307523ec30",
+    "actualFinalHash": "4497e15ba1474c65afb2d3052e10957ce83b844e1c9fc9199d8033307523ec30",
+    "lastCanonicalSequence": 2
+  },
+  "providerFallbackCount": 0
+}
