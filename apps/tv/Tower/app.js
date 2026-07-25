@@ -194,8 +194,8 @@ function makeTower() {
           tv.setAttribute("aria-label", "公共信号屏，暂无路过");
           if (slotId === "transit-01") {
             tv.dataset.homeResidentId = "resident-demo-user";
-            tv.dataset.room = "奶蛙的房间 · 当前外出";
-            tv.setAttribute("aria-label", "奶蛙的房间，当前外出");
+            tv.dataset.room = "奶蛙频道 · 当前外出";
+            tv.setAttribute("aria-label", "奶蛙频道，当前外出");
           }
         }
         if (roomTarget) {
@@ -388,13 +388,13 @@ function clearTransitScreens() {
         transitTv.dataset.homeResidentId === "resident-demo-user";
       transitTv.dataset.status = isMilkFrogHome ? "home-vacant" : "vacant";
       transitTv.dataset.room = isMilkFrogHome
-        ? "奶蛙的房间 · 当前外出"
+        ? "奶蛙频道 · 当前外出"
         : "公共信号 · 暂无路过";
       delete transitTv.dataset.residentId;
       delete transitTv.dataset.roomUrl;
       if (isMilkFrogHome) {
-        transitTv.dataset.roleLabel = "奶蛙的房间 · 外出";
-        transitTv.setAttribute("aria-label", "奶蛙的房间，当前外出");
+        transitTv.dataset.roleLabel = "奶蛙频道 · 外出";
+        transitTv.setAttribute("aria-label", "奶蛙频道，当前外出");
       } else {
         delete transitTv.dataset.roleLabel;
         transitTv.setAttribute("aria-label", "公共信号屏，暂无路过");
@@ -424,7 +424,11 @@ function applyResidentScreenState(state) {
     ? `${state.statusText} · ${state.rpgSummary}`
     : state.statusText;
   transitTv.dataset.residentId = state.residentId;
-  transitTv.dataset.roomId = state.roomId;
+  if (state.roomId) {
+    transitTv.dataset.roomId = state.roomId;
+  } else {
+    delete transitTv.dataset.roomId;
+  }
   transitTv.dataset.roleLabel = state.canEnter
     ? `${state.displayName} · 回到房间`
     : state.mode === "travelling"

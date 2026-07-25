@@ -111,13 +111,14 @@ const dayLoopProjection = {
 };
 
 test("maps the bottom WeirdCore showcase and milk frog route to stable semantic slots", () => {
-  assert.equal(slotIdForPosition(3, 3, 7), "transit-01");
-  assert.equal(slotIdForPosition(3, 3, 8), "transit-02");
-  assert.equal(slotIdForPosition(3, 3, 9), "transit-03");
+  assert.equal(slotIdForPosition(3, 3, 5), "transit-01");
+  assert.equal(slotIdForPosition(3, 3, 6), "transit-02");
+  assert.equal(slotIdForPosition(3, 3, 7), "transit-03");
+  assert.equal(slotIdForPosition(3, 3, 8), "transit-04");
+  assert.equal(slotIdForPosition(3, 3, 9), "transit-05");
   assert.equal(slotIdForPosition(3, 3, 10), "core-oo");
   assert.equal(slotIdForPosition(3, 3, 11), "core-cc");
-  assert.equal(slotIdForPosition(3, 3, 12), "transit-04");
-  assert.equal(slotIdForPosition(3, 3, 13), "transit-05");
+  assert.equal(slotIdForPosition(3, 3, 12), null);
   assert.equal(slotIdForPosition(1, 3, 10), null);
   assert.equal(slotIdForPosition(0, 0, 0), null);
 });
@@ -190,7 +191,6 @@ test("keeps one fixed home registry for the scheduler-driven milk frog", () => {
       actorId: "oc-user",
       displayName: "奶蛙",
       residentId: "resident-demo-user",
-      roomId: "room-demo-user",
       homeSlotId: "transit-01",
       spriteUrl:
         "http://127.0.0.1:5177/assets/demo/milk-frog-v1.png"
@@ -205,13 +205,12 @@ test("offline preview keeps the milk frog at its fixed home and never invents tr
       actorId: "oc-user",
       displayName: "奶蛙",
       residentId: "resident-demo-user",
-      roomId: "room-demo-user",
       homeSlotId: "transit-01",
       spriteUrl:
         "http://127.0.0.1:5177/assets/demo/milk-frog-v1.png",
       slotId: "transit-01",
       mode: "present",
-      statusText: "PREVIEW · 奶蛙在自己的房间",
+      statusText: "PREVIEW · 奶蛙在固定频道",
       advancedBy: "preview",
       interactive: false,
       canEnter: false
@@ -235,7 +234,7 @@ test("moves the resident overlay from its fixed home only when the real schedule
 
   assert.equal(planned.slotId, "transit-01");
   assert.equal(planned.mode, "present");
-  assert.equal(planned.roomId, "room-demo-user");
+  assert.equal(planned.roomId, undefined);
   assert.equal(travelling.slotId, "transit-03");
   assert.equal(travelling.mode, "travelling");
   assert.equal(travelling.advancedBy, "scheduler");
@@ -265,7 +264,7 @@ test("maps one real day-loop projection to six concise exhibition beats", () => 
   assert.equal(frames[5].coreStates[0].isHome, true);
   assert.equal(frames[5].coreStates[1].isHome, true);
   assert.equal(frames[0].scheduledResidentState.slotId, "transit-01");
-  assert.equal(frames[1].scheduledResidentState.slotId, "transit-03");
+  assert.equal(frames[1].scheduledResidentState.slotId, "transit-02");
   assert.equal(frames[1].scheduledResidentState.mode, "travelling");
   assert.equal(frames[2].scheduledResidentState.slotId, "transit-02");
   assert.ok(
@@ -286,7 +285,7 @@ test("maps one real day-loop projection to six concise exhibition beats", () => 
   ]);
   assert.deepEqual(frames[5].publicStatusItems, [
     "三位 OC 完成了各自的行动。",
-    "3 位住民获得新经历"
+    "OO 与 CC 带回了新经历"
   ]);
   assert.equal(frames[0].publicStatus, "今日安排准备中");
   assert.ok(
@@ -305,6 +304,41 @@ test("maps one real day-loop projection to six concise exhibition beats", () => 
   assert.equal(frames[3].publicStatus, frames[3].publicStatusItems[0]);
   assert.equal(frames[4].publicStatus, frames[4].publicStatusItems[0]);
   assert.equal(frames[5].publicStatus, frames[5].publicStatusItems[0]);
+});
+
+test("walks the milk frog through adjacent channels before a distant destination", () => {
+  const projection = structuredClone(dayLoopProjection);
+  projection.timeline = projection.timeline.map((frame) => ({
+    ...frame,
+    actors: frame.actors.map((actor) => ({
+      ...actor,
+      locationId:
+        frame.phase === "planned" || frame.phase === "travelling"
+          ? "mirror-curtain"
+          : "grand-foyer"
+    }))
+  }));
+  projection.event.locationId = "grand-foyer";
+
+  const frames = dayLoopFramesFromProjection(
+    projection,
+    "http://127.0.0.1:5177/"
+  );
+  const route = frames.map((frame) => frame.scheduledResidentState.slotId);
+  const firstVisit = route.filter(
+    (slotId, index) => index === 0 || route[index - 1] !== slotId
+  );
+
+  assert.deepEqual(firstVisit.slice(0, 4), [
+    "transit-01",
+    "transit-02",
+    "transit-03",
+    "transit-04"
+  ]);
+  assert.deepEqual(
+    frames.slice(0, 4).map((frame) => frame.phase),
+    ["planned", "travelling", "travelling", "arrived"]
+  );
 });
 
 test("redacts internal goal ids and ellipsizes unexpectedly long public copy", () => {
@@ -877,7 +911,7 @@ test("transparent television cutouts never inherit a white button plate", () => 
   );
 });
 
-test("OO and CC show the complete room artwork without cropping it into a portrait", () => {
+test("OO and CC room previews fill the measured CRT aperture behind its cutout", () => {
   const css = fs.readFileSync(
     path.join(__dirname, "styles.css"),
     "utf8"
@@ -885,7 +919,23 @@ test("OO and CC show the complete room artwork without cropping it into a portra
 
   assert.match(
     css,
-    /\.tv-slot\[data-variant="angel"\]\s+\.tv-content,\s*\.tv-slot\[data-variant="demon"\]\s+\.tv-content\s*\{[^}]*object-fit:\s*contain;/s
+    /\.tv-slot\[data-variant="angel"\]\s+\.tv-content,\s*\.tv-slot\[data-variant="demon"\]\s+\.tv-content\s*\{[^}]*object-fit:\s*cover;[^}]*object-position:\s*center center;/s
+  );
+  assert.match(
+    css,
+    /\.tv-screen\s*\{[^}]*z-index:\s*2;/s
+  );
+  assert.match(
+    css,
+    /\.tv-frame\s*\{[^}]*z-index:\s*3;/s
+  );
+  assert.match(
+    css,
+    /\.tv-slot\[data-tv="0"\]\s*\{[^}]*--screen-x:\s*11\.9%;[^}]*--screen-y:\s*16\.62%;[^}]*--screen-w:\s*76\.43%;[^}]*--screen-h:\s*60\.49%;/s
+  );
+  assert.match(
+    css,
+    /\.tv-slot\[data-tv="1"\]\s*\{[^}]*--screen-x:\s*11\.67%;[^}]*--screen-y:\s*27\.25%;[^}]*--screen-w:\s*64\.29%;[^}]*--screen-h:\s*57\.22%;/s
   );
 });
 
@@ -975,7 +1025,8 @@ test("milk frog remains a foreground layer over stable television imagery", () =
   assert.match(source, /function showTransitResident\(tv, imageUrl\)/);
   assert.match(source, /screen\.appendChild\(resident\)/);
   assert.match(source, /dataset\.homeResidentId\s*=\s*"resident-demo-user"/);
-  assert.match(source, /"奶蛙的房间 · 当前外出"/);
+  assert.doesNotMatch(source, /奶蛙的房间/);
+  assert.match(source, /"奶蛙频道 · 当前外出"/);
   assert.doesNotMatch(
     source,
     /state\.spriteUrl[\s\S]{0,120}transitBaseImageUrl\s*=/

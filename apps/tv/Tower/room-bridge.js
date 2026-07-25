@@ -8,13 +8,13 @@
   }
 })(typeof window === "undefined" ? globalThis : window, function createRoomBridge() {
   const layoutSlots = {
-    "3:3:7": "transit-01",
-    "3:3:8": "transit-02",
-    "3:3:9": "transit-03",
+    "3:3:5": "transit-01",
+    "3:3:6": "transit-02",
+    "3:3:7": "transit-03",
+    "3:3:8": "transit-04",
+    "3:3:9": "transit-05",
     "3:3:10": "core-oo",
-    "3:3:11": "core-cc",
-    "3:3:12": "transit-04",
-    "3:3:13": "transit-05"
+    "3:3:11": "core-cc"
   };
 
   const coreRooms = {
@@ -51,7 +51,6 @@
       actorId: "oc-user",
       displayName: "奶蛙",
       residentId: "resident-demo-user",
-      roomId: "room-demo-user",
       homeSlotId: "transit-01",
       spritePath: "assets/demo/milk-frog-v1.png"
     }
@@ -65,6 +64,13 @@
 
   const residentTransitSlot = "transit-03";
   const residentFallbackLocationSlot = "transit-05";
+  const residentRouteSlots = [
+    "transit-01",
+    "transit-02",
+    "transit-03",
+    "transit-04",
+    "transit-05"
+  ];
 
   const dayPhaseStatus = {
     travelling: () => "OC 正在前往各自的目的地。",
@@ -135,7 +141,7 @@
       ...resident,
       slotId: resident.homeSlotId,
       mode: "present",
-      statusText: "PREVIEW · 奶蛙在自己的房间",
+      statusText: "PREVIEW · 奶蛙在固定频道",
       advancedBy: "preview",
       interactive: false,
       canEnter: false
@@ -202,7 +208,12 @@
     return url.toString();
   }
 
-  function scheduledResidentStateFromFrame(frame, baseUrl, activeUserOc = null) {
+  function scheduledResidentStateFromFrame(
+    frame,
+    baseUrl,
+    activeUserOc = null,
+    visualSlotId = null
+  ) {
     if (
       !frame ||
       frame.advancedBy !== "scheduler" ||
@@ -231,10 +242,11 @@
       throw new Error(`Missing day-loop actor: ${resident.actorId}`);
     }
     const isTravelling = frame.phase === "travelling";
-    const slotId = isTravelling
-      ? residentTransitSlot
-      : residentLocationSlots[actor.locationId] ||
-        residentFallbackLocationSlot;
+    const slotId = visualSlotId ||
+      (isTravelling
+        ? residentTransitSlot
+        : residentLocationSlots[actor.locationId] ||
+          residentFallbackLocationSlot);
     return {
       ...resident,
       slotId,
@@ -317,9 +329,43 @@
         `${check.total} / DC ${check.dc} · ` +
         `${check.succeeded ? "成功" : "失败"}`
     );
-    const newExperienceCount = projection.memoryRefs.filter(
-      (memory) => memory.available
-    ).length;
+    const visibleExperienceActors = projection.memoryRefs
+      .filter(
+        (memory) =>
+          memory.available &&
+          Object.prototype.hasOwnProperty.call(coreSlotByActor, memory.actorId)
+      )
+      .map((memory) => nameFor(memory.actorId));
+
+    const plannedFrame = projection.timeline.find(
+      (frame) => frame.phase === "planned"
+    );
+    const arrivedFrame = projection.timeline.find(
+      (frame) => frame.phase === "arrived"
+    );
+    const residentActorId = activeUserOc?.actorId || "oc-user";
+    const slotForFrame = (frame) => {
+      const actor = frame?.actors?.find(
+        (candidate) => candidate.actorId === residentActorId
+      );
+      return residentLocationSlots[actor?.locationId] ||
+        residentFallbackLocationSlot;
+    };
+    const startSlot = slotForFrame(plannedFrame);
+    const destinationSlot = slotForFrame(arrivedFrame);
+    const startIndex = residentRouteSlots.indexOf(startSlot);
+    const destinationIndex = residentRouteSlots.indexOf(destinationSlot);
+    const direction = destinationIndex >= startIndex ? 1 : -1;
+    const route = [];
+    for (
+      let index = startIndex;
+      index !== destinationIndex + direction;
+      index += direction
+    ) {
+      route.push(residentRouteSlots[index]);
+    }
+    const travellingSlots =
+      route.length <= 2 ? [destinationSlot] : route.slice(1, -1);
 
     const frames = projection.timeline.map((frame) => {
       if (!dayPhaseLabel[frame.phase] || !Array.isArray(frame.actors)) {
@@ -359,7 +405,9 @@
             : frame.phase === "complete"
               ? [
                   concisePublicText(projection.event.publicNarrative),
-                  `${newExperienceCount} 位住民获得新经历`
+                  visibleExperienceActors.length === 2
+                    ? `${visibleExperienceActors.join(" 与 ")} 带回了新经历`
+                    : `${visibleExperienceActors.length} 位可查看住民带回新经历`
                 ]
               : [dayPhaseStatus[frame.phase]()];
 
@@ -377,19 +425,33 @@
       };
     });
 
-    return frames.flatMap((frame) =>
-      frame.phase === "in_event"
-        ? [
-            frame,
-            {
-              ...frame,
-              phaseLabel: "规则检定",
-              publicStatus: checks[0],
-              publicStatusItems: checks
-            }
-          ]
-        : [frame]
-    );
+    return frames.flatMap((frame) => {
+      if (frame.phase === "travelling") {
+        return travellingSlots.map((slotId) => ({
+          ...frame,
+          scheduledResidentState: scheduledResidentStateFromFrame(
+            projection.timeline.find(
+              (candidate) => candidate.phase === "travelling"
+            ),
+            baseUrl,
+            activeUserOc,
+            slotId
+          )
+        }));
+      }
+      if (frame.phase === "in_event") {
+        return [
+          frame,
+          {
+            ...frame,
+            phaseLabel: "规则检定",
+            publicStatus: checks[0],
+            publicStatusItems: checks
+          }
+        ];
+      }
+      return [frame];
+    });
   }
 
   function projectionSessionIdentity(apiBaseUrl, seed, userOcId = null) {
