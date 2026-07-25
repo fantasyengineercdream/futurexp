@@ -67,6 +67,13 @@ export interface VpsRelayOptions {
   stepfunApiKey: string;
   deviceToken: string;
   innerOsGenerator: InnerOsGenerator;
+  voiceContextLoader?: (actorId: string) => Promise<string | undefined>;
+}
+
+function livingWorldActorId(character: RealtimeCharacterConfig): string {
+  if (character.id === "angel") return "oc-angel";
+  if (character.id === "devil") return "oc-devil";
+  return character.id;
 }
 
 const FORWARDED_EVENTS = new Set([
@@ -171,7 +178,7 @@ class SharedRealtimeRoom {
       this.deviceCharacter = character;
     }
     if (admission.openUpstream) this.openUpstream();
-    this.configureCharacter(character);
+    void this.configureCharacter(character);
 
     socket.on("message", (value, isBinary) => {
       if (isBinary) return;
@@ -249,7 +256,7 @@ class SharedRealtimeRoom {
         detached.activeSource === "browser"
           ? this.browserCharacter
           : this.deviceCharacter;
-      if (nextCharacter) this.configureCharacter(nextCharacter);
+      if (nextCharacter) void this.configureCharacter(nextCharacter);
     });
   }
 
@@ -333,7 +340,7 @@ class SharedRealtimeRoom {
             this.policy.activeSource === "browser"
               ? this.browserCharacter
               : this.deviceCharacter;
-          if (character) this.configureCharacter(character);
+          if (character) void this.configureCharacter(character);
         }
         if (
           payload.type === "response.audio_transcript.done"
@@ -388,7 +395,7 @@ class SharedRealtimeRoom {
           ? this.browserCharacter
           : this.deviceCharacter;
       if (!character) return;
-      this.configureCharacter(character);
+      void this.configureCharacter(character);
       this.scheduleReconnect();
     });
     upstream.on("error", () => {
@@ -485,13 +492,25 @@ class SharedRealtimeRoom {
     }
   }
 
-  private configureCharacter(character: RealtimeCharacterConfig): void {
+  private async configureCharacter(
+    character: RealtimeCharacterConfig,
+  ): Promise<void> {
+    const memoryInstructions = await this.options.voiceContextLoader?.(
+      livingWorldActorId(character),
+    ).catch(() => undefined);
+    const activeCharacter =
+      this.policy.activeSource === "browser"
+        ? this.browserCharacter
+        : this.deviceCharacter;
+    if (!activeCharacter || activeCharacter.id !== character.id) return;
     this.sendUpstream(JSON.stringify({
       event_id: `session_${crypto.randomUUID()}`,
       type: "session.update",
       session: {
         modalities: ["text", "audio"],
-        instructions: character.instructions,
+        instructions: memoryInstructions
+          ? `${character.instructions}\n\n${memoryInstructions}`
+          : character.instructions,
         voice: character.voice,
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
@@ -632,6 +651,41 @@ export function createVpsRelay(options: VpsRelayOptions): Server {
   return server;
 }
 
+export async function loadVoiceContextFromApi(
+  apiBaseUrl: string,
+  actorId: string,
+  fetcher: typeof fetch = fetch,
+): Promise<string | undefined> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1_500);
+  try {
+    const response = await fetcher(
+      `${apiBaseUrl.replace(/\/$/, "")}/api/living-world/voice-context`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ actorId }),
+        signal: controller.signal,
+      },
+    );
+    if (!response.ok) return undefined;
+    const payload = await response.json() as Record<string, unknown>;
+    if (
+      payload.actorId !== actorId
+      || typeof payload.memoryInstructions !== "string"
+      || payload.memoryInstructions.length === 0
+      || payload.memoryInstructions.length > 4_000
+    ) {
+      return undefined;
+    }
+    return payload.memoryInstructions;
+  } catch {
+    return undefined;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function runtimeOptions(): VpsRelayOptions {
   const staticDir =
     process.env.OC_STATIC_DIR
@@ -650,6 +704,11 @@ function runtimeOptions(): VpsRelayOptions {
       ?? "wss://api.stepfun.com/step_plan/v1/realtime"
         + "?model=stepaudio-2.5-realtime",
     innerOsGenerator: (input) => generateInnerOs(stepfunApiKey, input),
+    voiceContextLoader: (actorId) => loadVoiceContextFromApi(
+      process.env.LIVING_WORLD_API_BASE_URL
+        ?? "http://127.0.0.1:8000",
+      actorId,
+    ),
   };
 }
 

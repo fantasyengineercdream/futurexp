@@ -20,7 +20,9 @@ from app.domain.living_memory import (
     OwnerConversationInput,
     OwnerConversationReceipt,
     OwnerMemoryJournalDTO,
+    OwnerVoiceContextDTO,
     PovBoundedLivingMemoryEngine,
+    build_owner_voice_memory_instructions,
 )
 from app.domain.day_cycle import LivingWorldDayCore, LivingWorldDayProjectionDTO
 from app.domain.models import WorldDefinition, WorldState
@@ -94,6 +96,16 @@ class CreateLivingWorldRunRequest(BaseModel):
     seed: str | None = Field(default=None, min_length=1, max_length=128)
     user_oc_id: str | None = Field(default=None, min_length=1)
     additional_oc_ids: list[str] = Field(default_factory=list)
+
+
+class OwnerVoiceContextRequest(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=_camel,
+        populate_by_name=True,
+        extra="forbid",
+    )
+
+    actor_id: str = Field(min_length=1, max_length=128)
 
 
 def create_router(
@@ -211,6 +223,17 @@ def create_router(
             "day-loop:meta",
             {"dayIndex": result.day_index},
         )
+        ensure_oc_registry_session()
+        for profile in bundle.actor_profiles:
+            storage.save_living_world_view(
+                "system-oc-registry-v01",
+                f"latest-day-loop:{profile.oc_id}",
+                {
+                    "runId": result.run_id,
+                    "actorId": profile.oc_id,
+                    "updatedDayIndex": result.day_index,
+                },
+            )
         return projection
 
     @router.post(
@@ -679,6 +702,40 @@ def create_router(
         return living_memory_engine.owner_journal(
             store,
             bundle_for_day_loop(run_id).actor_profile(actor_id),
+        )
+
+    @router.post(
+        "/api/living-world/voice-context",
+        response_model=OwnerVoiceContextDTO,
+        responses={
+            404: {"model": ErrorDto},
+            422: {"model": ErrorDto},
+            500: {"model": ErrorDto},
+        },
+    )
+    def get_latest_owner_voice_context(
+        body: OwnerVoiceContextRequest,
+    ) -> OwnerVoiceContextDTO:
+        latest = storage.get_living_world_view(
+            "system-oc-registry-v01",
+            f"latest-day-loop:{body.actor_id}",
+        )
+        run_id = str(latest["runId"])
+        profile = bundle_for_day_loop(run_id).actor_profile(body.actor_id)
+        store = LivingMemoryStore.model_validate(
+            storage.get_living_world_view(
+                run_id,
+                "day-loop:living-memory",
+            )
+        )
+        journal = living_memory_engine.owner_journal(store, profile)
+        if journal.actor_id != body.actor_id:
+            raise SessionNotFound(run_id)
+        return OwnerVoiceContextDTO(
+            run_id=run_id,
+            actor_id=body.actor_id,
+            updated_day_index=journal.updated_day_index,
+            memory_instructions=build_owner_voice_memory_instructions(journal),
         )
 
     @router.post(

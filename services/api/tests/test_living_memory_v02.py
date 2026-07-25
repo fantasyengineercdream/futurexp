@@ -854,3 +854,58 @@ def test_rejected_counsel_does_not_change_next_day_plan(tmp_path: Path) -> None:
     )
     assert rejected_angel == plain_angel
     assert "主人建议" not in rejected_angel["activityLabel"]
+
+
+def test_voice_context_resolves_latest_owner_memory_without_run_url(
+    tmp_path: Path,
+) -> None:
+    api = TestClient(
+        create_app(SQLiteStorage(tmp_path / "voice-context.sqlite3"))
+    )
+    day_one = api.post(
+        "/api/living-world/day-loop-runs",
+        json={"seed": "voice-context-owner-memory"},
+    )
+    assert day_one.status_code == 201
+    day_two = api.post(
+        f"/api/living-world/day-loop-runs/{day_one.json()['runId']}/advance"
+    )
+    assert day_two.status_code == 200
+
+    devil = api.post(
+        "/api/living-world/voice-context",
+        json={"actorId": "oc-devil"},
+    )
+
+    assert devil.status_code == 200
+    body = devil.json()
+    assert body["actorId"] == "oc-devil"
+    assert body["runId"] == day_one.json()["runId"]
+    assert body["updatedDayIndex"] == 2
+    assert "你自己亲历并记住的近期经历" in body["memoryInstructions"]
+    assert "第 2 天" in body["memoryInstructions"]
+    assert "第 1 天" in body["memoryInstructions"]
+    assert "根据日记" in body["memoryInstructions"]
+    assert len(body["memoryInstructions"]) <= 4_000
+
+    angel = api.post(
+        "/api/living-world/voice-context",
+        json={"actorId": "oc-angel"},
+    )
+    assert angel.status_code == 200
+    assert angel.json()["memoryInstructions"] != body["memoryInstructions"]
+
+
+def test_voice_context_has_no_fixture_fallback_for_unknown_actor(
+    tmp_path: Path,
+) -> None:
+    api = TestClient(
+        create_app(SQLiteStorage(tmp_path / "voice-context-missing.sqlite3"))
+    )
+
+    missing = api.post(
+        "/api/living-world/voice-context",
+        json={"actorId": "oc-not-in-a-real-run"},
+    )
+
+    assert missing.status_code == 404

@@ -42,6 +42,7 @@ sudo chmod 755 /opt/oocc/.venv/bin/*
 ```dotenv
 STEPFUN_API_KEY=replace-on-server
 OC_DEVICE_TOKEN=replace-with-dedicated-device-token
+LIVING_WORLD_API_BASE_URL=http://127.0.0.1:8000
 PORT=8765
 OC_STATIC_DIR=/opt/oocc/apps/room/dist
 ```

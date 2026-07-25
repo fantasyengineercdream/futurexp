@@ -4,7 +4,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import WebSocket, { WebSocketServer } from "ws";
-import { createVpsRelay } from "../vps-relay/server";
+import {
+  createVpsRelay,
+  loadVoiceContextFromApi,
+} from "../vps-relay/server";
 
 const servers: Array<{ close(callback: () => void): void }> = [];
 const sockets: WebSocket[] = [];
@@ -61,6 +64,76 @@ async function nextJson(socket: WebSocket): Promise<Record<string, unknown>> {
 }
 
 describe("VPS Realtime relay", () => {
+  it("loads the active OC memory on the server without room URL state", async () => {
+    const upstreamServer = createServer();
+    const upstreamWss = new WebSocketServer({ server: upstreamServer });
+    const upstreamMessages: string[] = [];
+    upstreamWss.on("connection", (socket) => {
+      socket.on("message", (value) => upstreamMessages.push(String(value)));
+      socket.send(JSON.stringify({ type: "session.created" }));
+    });
+    const upstreamPort = await listen(upstreamServer);
+    const staticDir = await mkdtemp(join(tmpdir(), "oc-vps-memory-"));
+    await writeFile(join(staticDir, "index.html"), "<h1>OC Room</h1>");
+    const requestedBodies: unknown[] = [];
+    const memoryApi = createServer((request, response) => {
+      let raw = "";
+      request.setEncoding("utf8");
+      request.on("data", (chunk) => {
+        raw += chunk;
+      });
+      request.on("end", () => {
+        requestedBodies.push(JSON.parse(raw));
+        response.writeHead(200, { "content-type": "application/json" });
+        response.end(JSON.stringify({
+          actorId: "oc-devil",
+          memoryInstructions:
+            "你自己亲历并记住：昨天在异常房间完成了一次检定。",
+        }));
+      });
+    });
+    const memoryApiPort = await listen(memoryApi);
+    const relay = createVpsRelay({
+      staticDir,
+      stepfunUrl: `ws://127.0.0.1:${upstreamPort}`,
+      stepfunApiKey: "test-stepfun-key",
+      deviceToken: "test-device-token",
+      voiceContextLoader: (actorId) => loadVoiceContextFromApi(
+        `http://127.0.0.1:${memoryApiPort}`,
+        actorId,
+      ),
+      innerOsGenerator: async () => ({
+        text: "……",
+        source: "fallback",
+      }),
+    });
+    const relayPort = await listen(relay);
+
+    await open(
+      new WebSocket(
+        `ws://127.0.0.1:${relayPort}/api/realtime?`
+          + new URLSearchParams({
+            character: "devil",
+            deviceId: "orangepi-3b-01",
+          }),
+      ),
+    );
+
+    await waitFor(() =>
+      upstreamMessages.some((message) => {
+        const event = JSON.parse(message) as {
+          type?: string;
+          session?: { instructions?: string };
+        };
+        return (
+          event.type === "session.update"
+          && event.session?.instructions?.includes("异常房间") === true
+        );
+      }),
+    );
+    expect(requestedBodies).toContainEqual({ actorId: "oc-devil" });
+  });
+
   it("configures StepFun from a bounded imported OC profile", async () => {
     const upstreamServer = createServer();
     const upstreamWss = new WebSocketServer({ server: upstreamServer });
