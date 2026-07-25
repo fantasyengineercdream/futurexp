@@ -583,6 +583,16 @@ body {
   box-shadow: 0 0 18px rgba(157, 255, 223, 0.24);
 }
 
+.oc-import-open:disabled,
+.oc-import-open:disabled:hover,
+.oc-import-open:disabled:focus-visible {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.38);
+  background: rgba(70, 70, 76, 0.38);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .oc-import-dialog {
   width: min(620px, calc(100vw - 32px));
   max-height: calc(100vh - 32px);

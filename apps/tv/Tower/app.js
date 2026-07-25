@@ -75,8 +75,13 @@ let publicStatusTimer = null;
 let worldLoopGeneration = 0;
 let pendingOcDraft = null;
 const activeUserOcSessionKey = "kaleidoroom.active-user-oc.v1";
+const ocImportEnabled = false;
 
 function restoreActiveUserOc() {
+  if (!ocImportEnabled) {
+    window.sessionStorage.removeItem(activeUserOcSessionKey);
+    return null;
+  }
   try {
     const value = JSON.parse(
       window.sessionStorage.getItem(activeUserOcSessionKey) || "null"
@@ -736,6 +741,7 @@ function reviewedDraft() {
 }
 
 ocImportOpen.addEventListener("click", () => {
+  if (!ocImportEnabled) return;
   showImportSource();
   ocImportDialog.showModal();
 });
@@ -758,6 +764,7 @@ ocImportFile.addEventListener("change", async () => {
 
 ocImportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!ocImportEnabled) return;
   setOcImportError();
   setOcImportBusy(
     ocImportPreview,
@@ -790,6 +797,7 @@ ocImportForm.addEventListener("submit", async (event) => {
 });
 
 ocImportConfirm.addEventListener("click", async () => {
+  if (!ocImportEnabled) return;
   setOcImportError();
   setOcImportBusy(
     ocImportConfirm,

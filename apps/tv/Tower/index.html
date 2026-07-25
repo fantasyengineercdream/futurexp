@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OC TV Tower Demo</title>
-    <link rel="stylesheet" href="./styles.css?v=integration-21" />
+    <link rel="stylesheet" href="./styles.css?v=integration-22" />
   </head>
   <body>
     <div id="app">
@@ -25,7 +25,14 @@
         <div class="hint">W/S 水平前后 · A/D 水平左右 · 空格 / Shift 垂直移动 · 拖动鼠标仅环顾</div>
         <div class="hud__actions">
           <button id="coreLocator" class="core-locator" type="button">寻找OOCC吧</button>
-          <button id="ocImportOpen" class="oc-import-open" type="button">导入我的 OC</button>
+          <button
+            id="ocImportOpen"
+            class="oc-import-open"
+            aria-disabled="true"
+            disabled
+            title="现场版本暂时关闭此功能"
+            type="button"
+          >导入 OC（维护中）</button>
         </div>
       </div>
 
@@ -111,8 +118,8 @@
       </dialog>
     </div>
 
-    <script src="./room-bridge.js?v=integration-21"></script>
-    <script src="./oc-import-client.js?v=integration-21"></script>
-    <script src="./app.js?v=integration-21"></script>
+    <script src="./room-bridge.js?v=integration-22"></script>
+    <script src="./oc-import-client.js?v=integration-22"></script>
+    <script src="./app.js?v=integration-22"></script>
   </body>
 </html>

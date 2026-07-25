@@ -7,8 +7,23 @@ const root = __dirname;
 const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const app = fs.readFileSync(path.join(root, "app.js"), "utf8");
 
-test("tower exposes one accessible paste-or-text-file import dialog", () => {
-  assert.match(html, /id="ocImportOpen"/);
+test("broken OC import is visibly disabled and cannot be opened", () => {
+  assert.match(
+    html,
+    /id="ocImportOpen"[^>]*aria-disabled="true"[^>]*disabled/
+  );
+  assert.match(html, /导入 OC（维护中）/);
+  assert.match(app, /const ocImportEnabled = false/);
+  assert.match(app, /if \(!ocImportEnabled\) return/);
+});
+
+test("disabled import clears a stale replacement and restores the preset milk frog", () => {
+  assert.match(app, /sessionStorage\.removeItem\(activeUserOcSessionKey\)/);
+  assert.match(app, /let activeUserOc = restoreActiveUserOc\(\)/);
+  assert.match(app, /if \(!ocImportEnabled\)[\s\S]*return null/);
+});
+
+test("the dormant import dialog remains available for later repair", () => {
   assert.match(html, /id="ocImportDialog"/);
   assert.match(html, /id="ocImportSourceText"/);
   assert.match(html, /accept="\.txt,\.md,text\/plain,text\/markdown"/);
